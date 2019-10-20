@@ -19,7 +19,7 @@ namespace AptekaMain.Models
         public int KategoriaIdKategoria { get; set; }
         public int? IlloscProduktow { get; set; }
         public int? IlloscPodstawowa { get; set; }
-        public string WymaganaRecepta { get; set; }
+        public bool WymaganaRecepta { get; set; }
 
         public Kategoria KategoriaIdKategoriaNavigation { get; set; }
         public Producent ProducentIdProducentNavigation { get; set; }

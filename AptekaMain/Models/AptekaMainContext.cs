@@ -63,10 +63,7 @@ namespace AptekaMain.Models
 
                 entity.Property(e => e.ProducentIdProducent).HasColumnName("Producent_Id_Producent");
 
-                entity.Property(e => e.WymaganaRecepta)
-                    .HasColumnName("wymagana_recepta")
-                    .HasMaxLength(1)
-                    .IsUnicode(false);
+                entity.Property(e => e.WymaganaRecepta).HasColumnName("wymagana_recepta");
 
                 entity.HasOne(d => d.KategoriaIdKategoriaNavigation)
                     .WithMany(p => p.Artykul)
@@ -397,9 +394,11 @@ namespace AptekaMain.Models
 
                 entity.Property(e => e.Access).HasColumnName("access");
 
-                entity.Property(e => e.Alive).HasColumnName("alive");
+                entity.Property(e => e.Active).HasColumnName("active");
 
                 entity.Property(e => e.PracownikIdPracownika).HasColumnName("pracownik_id_pracownika");
+
+                entity.Property(e => e.Token).HasColumnName("token");
 
                 entity.HasOne(d => d.PracownikIdPracownikaNavigation)
                     .WithMany(p => p.UserSession)

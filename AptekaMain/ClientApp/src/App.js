@@ -4,10 +4,10 @@ import Layout from './components/Layout';
 import Home from './components/Home';
 import Counter from './components/Counter';
 import FetchData from './components/FetchData';
-import Artykuls from './components/Artukyls';
+import Artykuls from './components/Artykuls/Artykuls';
 import Add_Scans from './components/Add_Scans';
 import Scans from './components/Scans';
-import Login from './components/Login';
+import Login_Form from './components/Login/Login_Form';
 
 export default () => (
   <Layout>
@@ -15,6 +15,8 @@ export default () => (
         <Route path='/artykuls' component={Artykuls} />
         <Route path='/add_scans' component={Add_Scans} />
         <Route path='/scans' component={Scans} />
-        <Route path='/login' component={Login} />
+        <Route path='/login' component={Login_Form} />
+        <Route path='/forecast' component={FetchData} />
+        <Route path='/counter' component={Counter} />
   </Layout>
 );

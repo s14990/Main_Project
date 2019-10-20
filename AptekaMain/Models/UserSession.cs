@@ -7,8 +7,9 @@ namespace AptekaMain.Models
     {
         public int IdSession { get; set; }
         public int PracownikIdPracownika { get; set; }
-        public bool? Alive { get; set; }
+        public bool? Active { get; set; }
         public int? Access { get; set; }
+        public string Token { get; set; }
 
         public Pracownik PracownikIdPracownikaNavigation { get; set; }
     }

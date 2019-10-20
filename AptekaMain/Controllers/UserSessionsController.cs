@@ -96,14 +96,17 @@ namespace AptekaMain.Controllers
             }
             if (user.Haslo != password)
             {
-                return BadRequest("WrongPassword");
+                return BadRequest(new {errors="WrongPassword" });
             }
             // _context.UserSession.Add(userSession);
             await _context.SaveChangesAsync();
 
-            UserSession userSession = new UserSession() { PracownikIdPracownika=user.IdPracownika,Access=user.PoziomDostępu} ;
+            UserSession us = new UserSession() { PracownikIdPracownika=user.IdPracownika,Access=user.PoziomDostępu,Active=true} ;
+            //_context.UserSession.Add(us);
+            //await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetUserSession", new { id = userSession.IdSession }, userSession);
+
+            return CreatedAtAction("GetUserSession", new { id = us.IdSession }, us);
         }
         
         // DELETE: api/UserSessions/5
