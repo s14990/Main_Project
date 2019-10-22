@@ -1,39 +1,53 @@
 ﻿import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Table } from 'reactstrap';
+import { AgGridReact } from 'ag-grid-react';
+import 'ag-grid-community/dist/styles/ag-grid.css';
+import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import EditArtykulButton from './EditArtykulButton';
 
-export default class Artykuls extends Component {
-    displayName = Artykuls.name
-
+class Artykuls extends Component {
 
     constructor(props) {
         super(props);
-        this.state = { artykuls: [], filtered: [], word: '', kategorias: [], producents: [], loading: true };
-
-        fetch('api/Artykuls')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ artykuls: data, filtered: data });
-            });
-        fetch('api/Producents')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ producents: data });
-            });
-        fetch('api/Kategorias')
-            .then(response => response.json())
-            .then(data => {
-                this.setState({ kategorias: data, loading: false });
-            });
-
-        this.renderArtykulsTable = this.renderArtykulsTable.bind(this);
+        this.state = {
+            artykuls: [], kategorias: [], producents: [], loading_data: true,loading_table: true,
+            columnDefs: [],
+            rowData: [],
+            context: { componentParent: this },
+            frameworkComponents: {
+                editRenderer: EditArtykulButton
+            }
+        };
+        
         this.findKategoriaName = this.findKategoriaName.bind(this);
         this.findProducentName = this.findProducentName.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
         this.refresh = this.refresh.bind(this);
-        this.compareBy = this.compareBy.bind(this);
-        this.sortBy = this.sortBy.bind(this);
-        this.handleInputChange = this.handleInputChange.bind(this);
+        this.setRowData = this.setRowData.bind(this);
+        this.setColumns = this.setColumns.bind(this);
+        this.getTableData = this.getTableData.bind(this);
+        this.methodFromParent = this.methodFromParent.bind(this);
+    }
+
+    async componentDidMount() {
+        await fetch('api/Artykuls')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ artykuls: data });
+            });
+        await fetch('api/Producents')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ producents: data })
+            });
+        await fetch('api/Kategorias')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ kategorias: data, loading_data: false });
+            });
+        this.getTableData();
     }
 
     handleDelete(id) {
@@ -66,103 +80,88 @@ export default class Artykuls extends Component {
         return "Producent not Found";
     }
 
+    onGridReady = params => {
+        this.gridApi = params.api;
+        this.gridColumnApi = params.columnApi;
+        params.api.sizeColumnsToFit();
+    };
 
-    handleInputChange(event) {
-        const target = event.target;
-        let name = target.name;
-        let value = target.value;
-        switch (name) {
-            case 'word':
-                if (value != '') {
-                    var arts = this.state.artykuls;
-                    var new_art = new Array();
-                    for (var i = 0; i < arts.length; i++) {
-                        if (arts[i].nazwa.includes(value))
-                            new_art.push(arts[i]);
-                    }
-                    this.setState({ filtered: new_art, word: value });
-                }
-                else {
-                    var arts = this.state.artykuls;
-                    this.setState({ filtered: arts, word: '' });
-                }
-
-                break;
-            default:
-                console.log("Unknown");
-                break;
+    setRowData() {
+        var artykuls = this.state.artykuls;
+        var art_rowData = [];
+        for (var i = 0; i<artykuls.length; i++) {
+            var artykul = artykuls[i];
+            var row = {
+            nazwa: artykul.nazwa,
+            kod: artykul.kod,
+            illoscProduktow: artykul.illoscProduktow,
+            illoscPodstawowa: artykul.illoscPodstawowa,
+            kategoria: this.findKategoriaName(artykul.kategoriaIdKategoria),
+            producent: this.findProducentName(artykul.producentIdProducent),
+            wymaganaRecepta: artykul.wymaganaRecepta,
+            idArtykul: artykul.idArtykul
+            }
+            
+            art_rowData.push(row);
         }
+        return art_rowData;
     }
 
-
-    compareBy(key) {
-        return function (a, b) {
-            if (a[key] < b[key]) return -1;
-            if (a[key] > b[key]) return 1;
-            return 0;
-        };
+    setColumns() {
+        let cols = [
+            {
+                headerName: "Nazwa", field: "nazwa", sortable: true, filter: true ,width: 100
+                },
+            {
+                headerName: "Kod", field: "kod", sortable: true, filter: true, width: 80 
+                },
+            {
+                headerName: "Illość", field: "illoscProduktow", sortable: true, filter: true, width: 80
+                },
+            {
+                headerName: "Illość Podstawowa", field: "illoscPodstawowa", sortable: true, filter: true
+                },
+            {
+                headerName: "Kategoria", field: "kategoria", sortable: true, filter: true
+                },
+            {
+                headerName: "Producent", field: "producent", sortable: true, filter: true
+                },
+            {
+                headerName: "Wymagana recepta?", field: "wymaganaRecepta",sortable: true
+            },
+            {
+                headerName: "Edit", field: "idArtykul", cellRenderer: "editRenderer"
+            }
+        ]
+        return cols;
     }
 
-    sortBy(key) {
-        let arrayCopy = [...this.state.filtered];
-        arrayCopy.sort(this.compareBy(key));
-        this.setState({ filtered: arrayCopy });
+    getTableData() {
+        let rows = this.setRowData();
+        let cols = this.setColumns();
+        this.setState({ columnDefs: cols, rowData: rows, loading_table: false });
     }
 
-    renderArtykulsTable(artykuls) {
-        return (
-            <div>
-                <Form>
-                    <FormGroup>
-                        <Label htmlFor="word">Wyszukiwanie po nazwie</Label>
-                        <Input type="text" className="form-control" name="word" value={this.state.word} onChange={this.handleInputChange} />
-                    </FormGroup>
-                </Form>
-                <Table bordered>
-                    <thead>
-                        <tr>
-                            <th onClick={() => this.sortBy('nazwa')} >Nazwa</th>
-                            <th onClick={() => this.sortBy('kod')}>Kod</th>
-                            <th onClick={() => this.sortBy('illoscProduktow')}>Illosc Produktów</th>
-                            <th onClick={() => this.sortBy('illoscPodstawowa')}>Illosc Podstawowa</th>
-                            <th onClick={() => this.sortBy('wymaganaRecepta')}>WymaganaRecepta</th>
-                            <th onClick={() => this.sortBy('kategoriaIdKategoria')}>Kategoria</th>
-                            <th onClick={() => this.sortBy('producentIdProducent')}>Producent</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {artykuls.map(artykul =>
-                            <tr key={artykul.idArtykul}>
-                                <td>{artykul.nazwa}</td>
-                                <td>{artykul.kod}</td>
-                                <td>{artykul.illoscProduktow}</td>
-                                <td>{artykul.illoscPodstawowa}</td>
-                                <td>{artykul.wymaganaRecepta==="1"? "Tak" : "Nie" }</td>
-                                <td>{this.findKategoriaName(artykul.kategoriaIdKategoria)}</td>
-                                <td>{this.findProducentName(artykul.producentIdProducent)}</td>
-                                <td><a className="action" onClick={(id) => this.handleDelete(artykul.idArtykul)}>Delete</a></td>
-                                <td><Link className="links" to={'artykul_edit/' + artykul.idArtykul}>Edit</Link></td>
-                            </tr>
-                        )}
-                    </tbody>
-                </Table>
-            </div>
-        );
+    methodFromParent(cell) {
+        //alert(cell);
+        this.props.history.push('/artykul_edit/' + cell);
     }
 
     render() {
-        let contents = this.state.loading
-            ? <p><em>Loading...</em></p>
-            : this.renderArtykulsTable(this.state.filtered);
-
         return (
-            <div>
-                <h1>Artykuly</h1>
-                {contents}
-                <p>
-                    <Link to="/artykul_new">Create New</Link>
-                </p>
+            <div style={{ height: '500px' }} className="ag-theme-balham">
+                <AgGridReact
+                    columnDefs={this.state.columnDefs}
+                    rowData={this.state.rowData}
+                    context={this.state.context}
+                    frameworkComponents={this.state.frameworkComponents}
+                    onGridReady={this.onGridReady}>
+                </AgGridReact>
             </div>
         );
     }
 }
+
+
+export default connect()(Artykuls);

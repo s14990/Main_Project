@@ -12,7 +12,7 @@ namespace AptekaMain.Models
             Photo = new HashSet<Photo>();
         }
 
-        public int IdArtukul { get; set; }
+        public int IdArtykul { get; set; }
         public string Nazwa { get; set; }
         public int? Kod { get; set; }
         public int ProducentIdProducent { get; set; }

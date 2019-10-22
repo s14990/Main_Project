@@ -6,9 +6,13 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AptekaMain.Models;
+using Microsoft.AspNet.OData;
 
 namespace AptekaMain.Controllers
 {
+    
+    [EnableQuery]
+
     [Route("api/[controller]")]
     [ApiController]
     public class ArtykulsController : ControllerBase
@@ -55,7 +59,7 @@ namespace AptekaMain.Controllers
                 return BadRequest(ModelState);
             }
 
-            if (id != artykul.IdArtukul)
+            if (id != artykul.IdArtykul)
             {
                 return BadRequest();
             }
@@ -93,7 +97,7 @@ namespace AptekaMain.Controllers
             _context.Artykul.Add(artykul);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetArtykul", new { id = artykul.IdArtukul }, artykul);
+            return CreatedAtAction("GetArtykul", new { id = artykul.IdArtykul }, artykul);
         }
 
         // DELETE: api/Artykuls/5
@@ -119,7 +123,7 @@ namespace AptekaMain.Controllers
 
         private bool ArtykulExists(int id)
         {
-            return _context.Artykul.Any(e => e.IdArtukul == id);
+            return _context.Artykul.Any(e => e.IdArtykul == id);
         }
     }
 }

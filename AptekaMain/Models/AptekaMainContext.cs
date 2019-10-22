@@ -46,9 +46,9 @@ namespace AptekaMain.Models
         {
             modelBuilder.Entity<Artykul>(entity =>
             {
-                entity.HasKey(e => e.IdArtukul);
+                entity.HasKey(e => e.IdArtykul);
 
-                entity.Property(e => e.IdArtukul).HasColumnName("id_artukul");
+                entity.Property(e => e.IdArtykul).HasColumnName("id_artykul");
 
                 entity.Property(e => e.IlloscPodstawowa).HasColumnName("illosc_podstawowa");
 

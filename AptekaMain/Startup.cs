@@ -1,4 +1,5 @@
 using AptekaMain.Models;
+using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,8 @@ namespace AptekaMain
             var connection = "Server=tcp:serverapteka.database.windows.net,1433;Initial Catalog=AptekaMain;User ID=apteka_admin;Password=usermain0!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;";
             services.AddDbContext<AptekaMainContext>(options => options.UseSqlServer(connection));
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.AddOData();
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
@@ -64,6 +67,15 @@ namespace AptekaMain
                 {
                     spa.UseReactDevelopmentServer(npmScript: "start");
                 }
+            });
+
+
+            app.UseMvc(routeBuilder => {
+
+                routeBuilder.EnableDependencyInjection();
+
+                routeBuilder.Expand().Select().OrderBy().Filter();
+
             });
         }
     }
