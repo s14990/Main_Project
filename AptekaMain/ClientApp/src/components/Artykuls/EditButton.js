@@ -1,6 +1,6 @@
 ﻿import React, { Component } from "react";
 
-export default class EditArtykulButton extends Component {
+export default class EditButton extends Component {
     constructor(props) {
         super(props);
 
@@ -9,7 +9,7 @@ export default class EditArtykulButton extends Component {
 
     invokeParentMethod() {
 
-        this.props.context.componentParent.methodFromParent(this.props.value);
+        this.props.context.componentParent.handleRedirect(this.props.value);
     }
 
     render() {

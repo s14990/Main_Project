@@ -9,6 +9,7 @@ import Add_Scans from './components/Scans/Add_Scans';
 import Scans from './components/Scans/Scans';
 import Login_Form from './components/Login/Login_Form';
 import EditArtykul from './components/Artykuls/EditArtykul';
+import ShowArtykul from './components/Artykuls/ShowArtykul';
 
 export default () => (
   <Layout>
@@ -20,5 +21,6 @@ export default () => (
         <Route path='/forecast' component={FetchData} />
         <Route path='/counter' component={Counter} />
         <Route exact path='/artykul_edit/:id' component={EditArtykul} />
+        <Route exact path='/artykul_show/:id' component={ShowArtykul} />
   </Layout>
 );

@@ -5,7 +5,7 @@ import { Button, Form, FormGroup, Label, Input, FormText, Table } from 'reactstr
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
-import EditArtykulButton from './EditArtykulButton';
+import EditButton from './EditButton';
 
 class Artykuls extends Component {
 
@@ -17,18 +17,19 @@ class Artykuls extends Component {
             rowData: [],
             context: { componentParent: this },
             frameworkComponents: {
-                editRenderer: EditArtykulButton
-            }
+                editRenderer: EditButton
+            },
+            rowSelection: "single"
         };
         
         this.findKategoriaName = this.findKategoriaName.bind(this);
         this.findProducentName = this.findProducentName.bind(this);
-        this.handleDelete = this.handleDelete.bind(this);
         this.refresh = this.refresh.bind(this);
         this.setRowData = this.setRowData.bind(this);
         this.setColumns = this.setColumns.bind(this);
         this.getTableData = this.getTableData.bind(this);
-        this.methodFromParent = this.methodFromParent.bind(this);
+        this.handleRedirect = this.handleRedirect.bind(this);
+        this.handleCreate = this.handleCreate.bind(this);
     }
 
     async componentDidMount() {
@@ -50,16 +51,7 @@ class Artykuls extends Component {
         this.getTableData();
     }
 
-    handleDelete(id) {
-        if (window.confirm("Do you want to delete Artykul" + id) === true)
-            fetch('api/Artykuls/' + id, {
-                method: 'DELETE'
-            }).then(setTimeout(this.refresh, 300));
-    }
-
-
     refresh() {
-        this.props.history.push("/");
         this.props.history.push("/artykuls");
     }
 
@@ -131,7 +123,7 @@ class Artykuls extends Component {
                 headerName: "Wymagana recepta?", field: "wymaganaRecepta",sortable: true
             },
             {
-                headerName: "Edit", field: "idArtykul", cellRenderer: "editRenderer"
+                headerName: "Edit", field: "idArtykul", cellRenderer: "editRenderer", colId: "edit"
             }
         ]
         return cols;
@@ -143,9 +135,22 @@ class Artykuls extends Component {
         this.setState({ columnDefs: cols, rowData: rows, loading_table: false });
     }
 
-    methodFromParent(cell) {
+    handleRedirect(cell) {
+        
         //alert(cell);
         this.props.history.push('/artykul_edit/' + cell);
+    }
+
+    handleCreate() {
+        this.props.history.push('/artykul_edit/0');
+    }
+
+    onSelectionChanged() {
+        let selectedRows = this.gridApi.getSelectedRows();
+        let selectedCell = this.gridApi.getFocusedCell();
+        let selectedRow = selectedRows.pop();
+        if (selectedCell.column.colId !== 'edit')
+        this.props.history.push('/artykul_show/' + selectedRow.idArtykul);
     }
 
     render() {
@@ -156,8 +161,13 @@ class Artykuls extends Component {
                     rowData={this.state.rowData}
                     context={this.state.context}
                     frameworkComponents={this.state.frameworkComponents}
-                    onGridReady={this.onGridReady}>
-                </AgGridReact>
+                    onGridReady={this.onGridReady}
+                    rowSelection={this.state.rowSelection}
+                    onSelectionChanged={this.onSelectionChanged.bind(this)}
+                />
+                <FormGroup>
+                    <Button className="btn btn-primary" type="button" onClick={this.handleCreate}>Return</Button>
+                </FormGroup>
             </div>
         );
     }

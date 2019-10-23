@@ -9,20 +9,22 @@ class EditArtykul extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            kategorias: [], producents: [], loading: true, err:'', disabled: true,
+            kategorias: [], producents: [], loading: true, err:'', disabled: true,mode: 'create',
             id: '', nazwa: '', kod: '', illoscPodstawowa: 0, illoscProduktow: 0, wymaganaRecepta:false, kategoria: '', producent: ''
         };
         const art_id = this.props.match.params.id;
-
-        fetch('api/Artykuls/' + art_id)
+        if (art_id != 0) {
+            fetch('api/Artykuls/' + art_id)
             .then(response => response.json())
             .then(data => {
                 this.setState({
                     id: data.idArtykul, nazwa: data.nazwa, kod: data.kod, illoscProduktow: data.illoscProduktow,
                     illoscPodstawowa: data.illoscPodstawowa, kategoria: data.kategoriaIdKategoria, producent: data.producentIdProducent,
-                    wymaganaRecepta: data.wymaganaRecepta
+                    wymaganaRecepta: data.wymaganaRecepta,mode: 'edit'
                 });
             });
+        }
+        
         fetch('api/Producents')
             .then(response => response.json())
             .then(data => {
@@ -38,8 +40,29 @@ class EditArtykul extends Component {
         this.handleInputChange = this.handleInputChange.bind(this);
         this.handleUpdate = this.handleUpdate.bind(this);
         this.validateData = this.validateData.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleReturn = this.handleReturn.bind(this);
+        this.handleCreate = this.handleCreate.bind(this);
     }
 
+    handleCreate() {
+        fetch("api/Artykuls/", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                nazwa: this.state.nazwa,
+                kod: this.state.kod,
+                illoscProduktow: this.state.illoscProduktow,
+                illoscPodstawowa: this.state.illoscPodstawowa,
+                kategoriaIdKategoria: this.state.kategoria,
+                producentIdProducent: this.state.producent,
+                wymaganaRecepta: this.state.wymaganaRecepta
+            })
+        }).then(setTimeout(this.refresh, 300));
+
+    }
 
    handleUpdate() {
 
@@ -60,6 +83,19 @@ class EditArtykul extends Component {
             })
        }).then(setTimeout(this.refresh, 300));
     }
+
+    handleDelete() {
+        let id = this.state.id;
+        if (window.confirm("Do you want to delete Artykul" + id) === true)
+            fetch('api/Artykuls/' + id, {
+                method: 'DELETE'
+            }).then(setTimeout(this.refresh, 300));
+    }
+
+    handleReturn() {
+        setTimeout(this.refresh, 300);
+    }
+
 
 
     refresh() {
@@ -120,15 +156,15 @@ class EditArtykul extends Component {
                     <Input type="text" className="form-control" name="nazwa" value={this.state.nazwa} onChange={this.handleInputChange} />
                 </FormGroup>
                 <FormGroup>
-                    <Label htmlFor="nazwa">Nazwa</Label>
+                    <Label htmlFor="kod">Kod</Label>
                     <Input type="kod" className="form-control" name="kod" value={this.state.kod} onChange={this.handleInputChange} />
                 </FormGroup>
                 <FormGroup>
-                    <Label htmlFor="nazwa">Illosc Podstawowa</Label>
+                    <Label htmlFor="illosc">Illosc Podstawowa</Label>
                     <Input type="number" className="form-control" name="illosc" value={this.state.illoscPodstawowa} onChange={this.handleInputChange} />
                 </FormGroup>
                 <FormGroup>
-                    <Label htmlFor="kategoria">Producent</Label>
+                    <Label htmlFor="kategoria">Kategoria</Label>
                     <select className="form-control" name="kategoria" value={this.state.kategoria} onChange={this.handleInputChange}>
                         <option value="" disabled></option>
                         {this.state.kategorias.map(kat =>
@@ -151,7 +187,17 @@ class EditArtykul extends Component {
                 </FormGroup>
                 {this.state.err.length > 0 && <p className="Error">{this.state.err}</p>}
                 <FormGroup>
-                <Button className="btn btn-primary" type="button" onClick={this.handleUpdate} disabled={this.state.disabled}>Save kategoria</Button>
+                    {this.state.mode === "edit" && 
+
+                        <div>
+                    <Button className="btn btn-primary" type="button" onClick={this.handleUpdate} disabled={this.state.disabled}>Save Artykul</Button>
+                        <Button className="btn btn-primary" type="button" onClick={this.handleDelete}> Delete Artykul</Button>
+                        </div>
+                }
+                    {this.state.mode === "create" &&
+                        <Button className="btn btn-primary" type="button" onClick={this.handleCreate} disabled={this.state.disabled}>Create Artykul</Button>
+                    }
+                    <Button className="btn btn-primary" type="button" onClick={this.handleReturn}>Create New</Button>
                 </FormGroup>
             </Form>
         );
