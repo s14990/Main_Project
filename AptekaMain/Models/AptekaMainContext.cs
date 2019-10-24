@@ -258,7 +258,7 @@ namespace AptekaMain.Models
                     .HasColumnName("nazwisko")
                     .HasMaxLength(100);
 
-                entity.Property(e => e.PoziomDostępu).HasColumnName("poziom_dostępu");
+                entity.Property(e => e.PoziomDostepu).HasColumnName("poziom_dostepu");
 
                 entity.Property(e => e.WydzialAptekiIdWydzialu).HasColumnName("wydzial_apteki_id_wydzialu");
 

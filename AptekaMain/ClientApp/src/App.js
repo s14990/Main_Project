@@ -8,19 +8,26 @@ import Artykuls from './components/Artykuls/Artykuls';
 import Add_Scans from './components/Scans/Add_Scans';
 import Scans from './components/Scans/Scans';
 import Login_Form from './components/Login/Login_Form';
-import EditArtykul from './components/Artykuls/EditArtykul';
+import Edit_Artykul from './components/Artykuls/Edit_Artykul';
 import ShowArtykul from './components/Artykuls/ShowArtykul';
+import Users from './components/Users/Users';
+import Edit_User from './components/Users/Edit_User';
+import Listy_Brakow from './components/ListaBraki/Listy_Brakow';
+import Show_Lista_Brakow from './components/ListaBraki/Show_Lista_Brakow';
 
 export default () => (
   <Layout>
     <Route exact path='/' component={Home} />
         <Route path='/artykuls' component={Artykuls} />
+        <Route exact path='/artykul_edit/:id' component={Edit_Artykul} />
+        <Route exact path='/artykul_show/:id' component={ShowArtykul} />
         <Route path='/add_scans' component={Add_Scans} />
         <Route path='/scans' component={Scans} />
         <Route path='/login' component={Login_Form} />
-        <Route path='/forecast' component={FetchData} />
-        <Route path='/counter' component={Counter} />
-        <Route exact path='/artykul_edit/:id' component={EditArtykul} />
-        <Route exact path='/artykul_show/:id' component={ShowArtykul} />
+        <Route exact path='/users' component={Users} />
+        <Route exact path='/user_edit/:id' component={Edit_User} />
+        <Route exact path='/listy_brakow/' component={Listy_Brakow} />
+        <Route exact path='/lista_brakow_show/:id' component={Show_Lista_Brakow} />
+        
   </Layout>
 );

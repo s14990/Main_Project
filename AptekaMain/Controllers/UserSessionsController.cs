@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AptekaMain.Models;
+using Microsoft.AspNet.OData;
 
 namespace AptekaMain.Controllers
 {
+    [EnableQuery]
+
     [Route("api/[controller]")]
     [ApiController]
     public class UserSessionsController : ControllerBase
@@ -101,7 +104,7 @@ namespace AptekaMain.Controllers
             // _context.UserSession.Add(userSession);
             await _context.SaveChangesAsync();
 
-            UserSession us = new UserSession() { PracownikIdPracownika=user.IdPracownika,Access=user.PoziomDostępu,Active=true} ;
+            UserSession us = new UserSession() { PracownikIdPracownika=user.IdPracownika,Access=user.PoziomDostepu,Active=true} ;
             //_context.UserSession.Add(us);
             //await _context.SaveChangesAsync();
 

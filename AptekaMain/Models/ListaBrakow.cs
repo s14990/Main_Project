@@ -11,7 +11,16 @@ namespace AptekaMain.Models
         }
 
         public int IdLista { get; set; }
-        public DateTime? DataGen { get; set; }
+        private DateTime _date;
+        public DateTime DataGen
+        {
+            get => _date.Date;
+            set
+            {
+                _date = value;
+            }
+        }
+
 
         public ICollection<Braki> Braki { get; set; }
     }

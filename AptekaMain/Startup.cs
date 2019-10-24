@@ -74,7 +74,7 @@ namespace AptekaMain
 
                 routeBuilder.EnableDependencyInjection();
 
-                routeBuilder.Expand().Select().OrderBy().Filter();
+                routeBuilder.Expand().Select().OrderBy().Filter().Count().MaxTop(100);
 
             });
         }

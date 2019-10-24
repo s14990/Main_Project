@@ -13,7 +13,7 @@ namespace AptekaMain.Models
         public int IdPracownika { get; set; }
         public string Imie { get; set; }
         public string Nazwisko { get; set; }
-        public int? PoziomDostępu { get; set; }
+        public int? PoziomDostepu { get; set; }
         public int? WydzialAptekiIdWydzialu { get; set; }
         public string Haslo { get; set; }
         public string Email { get; set; }

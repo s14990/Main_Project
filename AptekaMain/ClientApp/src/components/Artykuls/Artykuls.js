@@ -166,7 +166,7 @@ class Artykuls extends Component {
                     onSelectionChanged={this.onSelectionChanged.bind(this)}
                 />
                 <FormGroup>
-                    <Button className="btn btn-primary" type="button" onClick={this.handleCreate}>Return</Button>
+                    <Button className="btn btn-primary" type="button" onClick={this.handleCreate}>Create new</Button>
                 </FormGroup>
             </div>
         );

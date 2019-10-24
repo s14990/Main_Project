@@ -3,8 +3,8 @@ import { Button, Form, FormGroup, Label, Input, FormText, Table} from 'reactstra
 import { connect } from 'react-redux';
 import axios from 'axios';
 
-class EditArtykul extends Component {
-    displayName = EditArtykul.name
+class Edit_Artykul extends Component {
+    displayName = Edit_Artykul.name
 
     constructor(props) {
         super(props);
@@ -197,7 +197,7 @@ class EditArtykul extends Component {
                     {this.state.mode === "create" &&
                         <Button className="btn btn-primary" type="button" onClick={this.handleCreate} disabled={this.state.disabled}>Create Artykul</Button>
                     }
-                    <Button className="btn btn-primary" type="button" onClick={this.handleReturn}>Create New</Button>
+                    <Button className="btn btn-primary" type="button" onClick={this.handleReturn}>Return</Button>
                 </FormGroup>
             </Form>
         );
@@ -219,4 +219,4 @@ class EditArtykul extends Component {
 }
 
 
-export default connect()(EditArtykul);
+export default connect()(Edit_Artykul);

@@ -9,6 +9,7 @@ export default class Add_Scans extends Component {
         super(props);
         this.state = { selectedFile: null,file_state: "empty"};
 
+        this.refresh = this.refresh.bind(this);
     }
 
     fileChangedHandler = event => {
@@ -32,8 +33,12 @@ export default class Add_Scans extends Component {
         formData.append('SprzedazIdSprzedazy', 1);
         formData.append('ScanName', this.state.selectedFile.name);
         formData.append('Scan', this.state.base64);
-        console.log("base64: " + this.state.base64);
         axios.post('api/ScanRecepties', formData);
+        setTimeout(this.refresh, 1000);
+    }
+
+    refresh() {
+        this.props.history.push("/scans");
     }
 
 
