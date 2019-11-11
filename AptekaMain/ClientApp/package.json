@@ -20,7 +20,8 @@
     "axios": "^0.19.0",
     "ag-grid-react": "^21.2.2",
     "ag-grid-community": "^21.2.2",
-    "react-select": "2.4.4"
+    "react-select": "2.4.4",
+    "react-datepicker": "^2.10.0"
   },
   "devDependencies": {
     "ajv": "^6.0.0",

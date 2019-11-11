@@ -3,9 +3,12 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Button, Form, FormGroup, Label, Input, FormText, Table, Container,Row,Col } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
-//import Select from 'react-select';
+import Select from 'react-select';
+import DatePicker from 'react-datepicker';
+import axios from 'axios';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import 'react-datepicker/dist/react-datepicker.css';
 
 class Create_Zamowienia extends Component {
 
@@ -20,6 +23,16 @@ class Create_Zamowienia extends Component {
             init_data: [],
             searchList: [],
             selectedOption: '',
+            getRowNodeId: function (data) {
+                return data.idArtykul;
+            },
+            order_date: new Date(),
+            payment_date: new Date(),
+            receive_date: new Date(),
+            hurtownia_id: '',
+            disabled: true,
+            wartosc: '',
+            oplacone: 0,
         };
 
         this.findHurtowniaName = this.findHurtowniaName.bind(this);
@@ -29,7 +42,13 @@ class Create_Zamowienia extends Component {
         this.setColumns = this.setColumns.bind(this);
         this.getTableData = this.getTableData.bind(this);
         this.handleCreate = this.handleCreate.bind(this);
-        this.handleSelectionChange = this.handleSelectionChange.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleDelete = this.handleDelete.bind(this);
+        this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleWartoscUpdate = this.handleWartoscUpdate.bind(this);
+        this.validateData = this.validateData.bind(this);
+        this.get_days_for_payment = this.get_days_for_payment.bind(this);
+        this.get_days_for_delivery = this.get_days_for_delivery.bind(this);
     }
 
     async componentDidMount() {
@@ -60,7 +79,7 @@ class Create_Zamowienia extends Component {
     }
 
     refresh() {
-        this.props.history.push("/artykuls");
+        this.props.history.push("/zamowienia/");
     }
 
     findHurtowniaName(id) {
@@ -135,6 +154,7 @@ class Create_Zamowienia extends Component {
                     let c = params.data.cenaWZakupu;
                     let i = params.data.liczba;
                     let r = c * i;
+                    r = r.toFixed(2);
                     return r;
                 },
                 editable: false,
@@ -151,7 +171,55 @@ class Create_Zamowienia extends Component {
     }
 
     handleCreate() {
-        this.props.history.push('/artykul_edit/0');
+
+       var req = JSON.stringify({
+            dataZamowienia: this.state.order_date,
+            dataOplaty: this.state.payment_date,
+            dataDostawy: this.state.receive_date,
+            sumaZamowienia: this.state.wartosc,
+            hurtowniaIdHurtowni: this.state.hurtownia_id,
+            oplacono: this.state.oplacone==1? false : true ,
+            status: "zlozone",
+        });
+        console.log(req);
+        /*
+        body: (...)
+        bodyUsed: false
+        headers: Headers
+        ok: true
+        redirected: false
+        status: 201
+        statusText: "Created"
+        type: "basic"
+        url: "http://localhost:55810/api/Zamowienies"
+        */
+        fetch("/api/Zamowienies", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: req
+        }).then(response => response.json()).then(data => {
+            console.log(data);
+            this.gridApi.forEachNode(node => {
+                var req_partia = JSON.stringify({
+                    dataWaznosci: new Date(),
+                    artykulIdArtukulu: node.data.idArtykul,
+                    zamowienieIdZamowienia: data.idZamowienia,
+                    cenaWSprzedazy: 0,
+                    cenaWZakupu: node.data.cenaWZakupu,
+                    liczba: node.data.liczba,
+                    status: "oczekiwane",
+                });
+                fetch("/api/Partias", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: req_partia
+                }).then(response => response.json()).then(data=>console.log(data));
+            });
+        }).then(setTimeout(this.refresh, 300));
     }
 
     onSelectionChanged() {
@@ -162,22 +230,201 @@ class Create_Zamowienia extends Component {
         this.setState({ selectedOption })   
     }
 
-/*
-    <div>
-    <Select
-        value={this.state.selectedOption}
-        options={this.state.searchList}
-        onChange={this.handleSelectionChange}
-    />
-    </div>
-    */
+    handleAdd() {
+        if (this.state.selectedOption) {
+            var s = this.state.selectedOption.value;
+            var row = this.gridApi.getRowNode(s.idArtykul);
+            if (row) {
+                window.alert("Ten Artykuł już został dodany");
+            }
+            else {
+                var art_rowData = [];
+                var row = {
+                    idArtykul: s.idArtykul,
+                    nazwa: s.nazwa,
+                    kod: s.kod,
+                    illoscProduktow: s.illoscProduktow,
+                    illoscPodstawowa: s.illoscPodstawowa,
+                    cenaWZakupu: 0,
+                    liczba: 0,
+                }
+                art_rowData.push(row);
+                this.gridApi.updateRowData({ add: art_rowData })
+            }
+        }
+    }
+
+    handleDelete() {
+        var d_rows = this.gridApi.getSelectedRows();
+        this.gridApi.updateRowData({ remove: d_rows });
+    }
+
+    handleInputChange(event) {
+        const target = event.target;
+        let name = target.name;
+        let value = target.value;
+        switch (name) {
+            case 'hurtownia':
+                this.setState({ hurtownia_id: value });
+                break;
+            case 'oplacone':
+                this.setState({ oplacone: value });
+                break;
+            default:
+                console.log("Unknown");
+                break;
+        }
+        this.validateData();
+    }
+
+    validateData() {
+        this.setState({ err: "", disabled: false });
+        if (this.state.hurtownia_id == null)
+            this.setState({ err: "Wybierz Hutrownie", disabled: true });
+
+    }
+
+
+    get_days_for_payment(id) {
+        var hur = this.state.hurtowni;
+        for (var i in hur) {
+            if (id == hur[i].idHurtownia)
+                return hur[i].dniNaOplate;
+        }
+        return 1;
+    }
+
+    get_days_for_delivery(id) {
+        var hur = this.state.hurtowni;
+        for (var i in hur) {
+            if (id == hur[i].idHurtownia)
+                return hur[i].dniNaDostawe;
+        }
+        console.log("Not Found delivery days");
+        return 1;
+    }
+
+    handleOrderDateChange = date => {
+        this.setState({
+            order_date: date
+        });
+        if (this.state.hurtownia_id) {
+            var p_date = new Date();
+            p_date.setDate(date.getDate() + this.get_days_for_payment(this.state.hurtownia_id));
+            var d_date = new Date();
+            d_date.setDate(date.getDate() + this.get_days_for_delivery(this.state.hurtownia_id));
+            this.setState({
+                payment_date: p_date, receive_date: d_date
+            });
+        }
+    }
+
+    handlePaymentDateChange = date => {
+        this.setState({
+            payment_date: date
+        });
+    }
+
+    handleReceiveDateChange = date => {
+        this.setState({
+            receive_date: date
+        });
+    }
+
+    handleWartoscUpdate() {
+        let sum = 0;
+        this.gridApi.forEachNode(node => {
+            let c = node.data.cenaWZakupu;
+            let i = node.data.liczba;
+            let r = c * i;
+            sum += r;
+        });
+        console.log(sum);
+        this.setState({ wartosc: sum });
+    }
+
     render() {
         return (
             <Container>
                 <Row>
+                    <Col>
+                    <Form>
+                        <FormGroup>
+                            <Label htmlFor="hurtownia">Hurtownia</Label>
+                            <select className="form-control" name="hurtownia" value={this.state.hurtownia_id} onChange={this.handleInputChange}>
+                                <option value="" disabled></option>
+                                {this.state.hurtowni.map(hurt =>
+                                    <option key={hurt.idHurtownia} value={hurt.idHurtownia}>{hurt.nazwa}</option>
+                                )}
+                            </select>
+                        </FormGroup>
+                        </Form>
+                    </Col>
+                    <Col>
+                        <FormGroup>
+                        <Label>Data zamowienia</Label>
+                        <DatePicker
+                            selected={this.state.order_date}
+                            onChange={this.handleOrderDateChange}
+                            />
+                         </FormGroup>
+                    </Col>
+                    <Col>
+                        <FormGroup>
+                        <Label>Data Opłaty</Label>
+                        <DatePicker
+                            selected={this.state.payment_date}
+                            onChange={this.handlePaymentDateChange}
+                            />
+                        </FormGroup>
+                    </Col>
+                    <Col>
+                        <FormGroup>
+                        <Label>Data dotawy</Label>
+                        <DatePicker
+                            selected={this.state.receive_date}
+                            onChange={this.handleReceiveDateChange}
+                            />
+                        </FormGroup>
+                    </Col>
+                    <Col>
+                        <FormGroup>
+                            <Label htmlFor="wartosc" >Lączna Wartość</Label>
+                            <Input type="number" className="form-control" name="wartosc" value={this.state.wartosc} readonly/>
+                        </FormGroup>
+                    </Col>
+                    <Col>
+                        <FormGroup>
+                            <Label htmlFor="oplacone" >Opłacone</Label>
+                            <Input type="checkbox" className="form-control" name="oplacone" value={this.state.oplacone} onChange={this.handleInputChange}/>
+                        </FormGroup>
+                    </Col>
                 </Row>
                 <Row>
-                <div style={{ height: '500px' }} className="ag-theme-balham">
+                    <Col>
+                    <div>
+                        <Select
+                            value={this.state.selectedOption}
+                            options={this.state.searchList}
+                            onChange={this.handleChange}
+                        />
+                        </div>
+                    </Col>
+                    <Col>
+                        <Button className="btn btn-primary" type="button" onClick={this.handleAdd}>Dodaj</Button>
+                    </Col>
+                    <Col>
+                        <Button className="btn btn-primary" type="button" onClick={this.handleDelete}>Delete</Button>
+                    </Col>
+                    <Col>
+                        <Button className="btn btn-primary" type="button" onClick={this.handleWartoscUpdate}>Wylicz lączną wartość</Button>
+                    </Col>
+                </Row>
+                <Row>
+                    <div style={{
+                        height: "600px",
+                        width: "100%"
+                    }} className="ag-theme-balham">
                 <AgGridReact
                     columnDefs={this.state.columnDefs}
                     rowData={this.state.rowData}
@@ -186,6 +433,7 @@ class Create_Zamowienia extends Component {
                     onGridReady={this.onGridReady}
                     rowSelection={this.state.rowSelection}
                     onSelectionChanged={this.onSelectionChanged.bind(this)}
+                    getRowNodeId={this.state.getRowNodeId}
                 />
                 </div>
                 </Row>

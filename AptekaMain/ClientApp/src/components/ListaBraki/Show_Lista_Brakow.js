@@ -133,7 +133,7 @@ class Listy_Brakow extends Component {
                 valueGetter: function (params) {
                     let p = params.data.illoscPodstawowa;
                     let i = params.data.illosc;
-                    let r = (p-i)*100/p; //* 100 / params.data.illoscPodstawowa;
+                    let r = (p-i)*100/p;
                     return parseInt(r, 10)
                 },
                 editable: false,

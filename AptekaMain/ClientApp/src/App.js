@@ -15,6 +15,7 @@ import Edit_User from './components/Users/Edit_User';
 import Listy_Brakow from './components/ListaBraki/Listy_Brakow';
 import Show_Lista_Brakow from './components/ListaBraki/Show_Lista_Brakow';
 import Create_Zamowienie from './components/Zamowienia/Create_Zamowienie';
+import Zamowienia from './components/Zamowienia/Zamowienia';
 
 export default () => (
   <Layout>
@@ -30,6 +31,7 @@ export default () => (
         <Route exact path='/listy_brakow/' component={Listy_Brakow} />
         <Route exact path='/lista_brakow_show/' component={Show_Lista_Brakow} />
         <Route exact path='/create_zamowienie/' component={Create_Zamowienie} />
+        <Route exact path='/zamowienia/' component={Zamowienia} />
         
   </Layout>
 );

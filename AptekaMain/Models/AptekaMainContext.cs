@@ -140,6 +140,8 @@ namespace AptekaMain.Models
 
                 entity.Property(e => e.IdHurtownia).HasColumnName("id_hurtownia");
 
+                entity.Property(e => e.DniNaDostawe).HasColumnName("dni_na_dostawe");
+
                 entity.Property(e => e.DniNaOplate).HasColumnName("dni_na_oplate");
 
                 entity.Property(e => e.Nazwa)
@@ -182,7 +184,7 @@ namespace AptekaMain.Models
 
                 entity.Property(e => e.ArtykulIdArtukulu).HasColumnName("artykul_id_artukulu");
 
-                entity.Property(e => e.CenaWSprzedaży).HasColumnName("cena_w_sprzedaży");
+                entity.Property(e => e.CenaWSprzedazy).HasColumnName("cena_w_sprzedazy");
 
                 entity.Property(e => e.CenaWZakupu).HasColumnName("cena_w_zakupu");
 

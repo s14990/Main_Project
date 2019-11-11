@@ -5,9 +5,8 @@ import { Button, Form, FormGroup, Label, Input, FormText, Table } from 'reactstr
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
-import EditButton from './EditButton';
 
-class ShowZamowienia extends Component {
+class Zamowienia extends Component {
 
     constructor(props) {
         super(props);
@@ -19,8 +18,7 @@ class ShowZamowienia extends Component {
             rowSelection: "single"
         };
 
-        this.findKategoriaName = this.findKategoriaName.bind(this);
-        this.findProducentName = this.findProducentName.bind(this);
+        this.findHurtowniaName = this.findHurtowniaName.bind(this);
         this.refresh = this.refresh.bind(this);
         this.setRowData = this.setRowData.bind(this);
         this.setColumns = this.setColumns.bind(this);
@@ -44,24 +42,16 @@ class ShowZamowienia extends Component {
     }
 
     refresh() {
-        this.props.history.push("/artykuls");
+        this.props.history.push("/zamowienia");
     }
 
-    findKategoriaName(id) {
-        var kat = this.state.kategorias;
-        for (var i in kat) {
-            if (id === kat[i].idKategoria)
-                return kat[i].nazwa;
+    findHurtowniaName(id) {
+        let hurt = this.state.hurtowni;
+        for (var i in hurt) {
+            if (id === hurt[i].idHurtownia)
+                return hurt[i].nazwa;
         };
-        return "Kategoria not Found";
-    }
-    findProducentName(id) {
-        var prod = this.state.producents;
-        for (var i in prod) {
-            if (id === prod[i].idProducent)
-                return prod[i].nazwa;
-        };
-        return "Producent not Found";
+        return "Hurtownia not Found";
     }
 
     onGridReady = params => {
@@ -71,19 +61,18 @@ class ShowZamowienia extends Component {
     };
 
     setRowData() {
-        var artykuls = this.state.artykuls;
+        var zam = this.state.zamowienia;
         var art_rowData = [];
-        for (var i = 0; i < artykuls.length; i++) {
-            var artykul = artykuls[i];
+        for (var i = 0; i < zam.length; i++) {
+            var zamow = zam[i];
             var row = {
-                nazwa: artykul.nazwa,
-                kod: artykul.kod,
-                illoscProduktow: artykul.illoscProduktow,
-                illoscPodstawowa: artykul.illoscPodstawowa,
-                kategoria: this.findKategoriaName(artykul.kategoriaIdKategoria),
-                producent: this.findProducentName(artykul.producentIdProducent),
-                wymaganaRecepta: artykul.wymaganaRecepta,
-                idArtykul: artykul.idArtykul
+                idZamowienia: zamow.idZamowienia,
+                hurtownia: this.findHurtowniaName(zamow.hurtowniaIdHurtowni),
+                dataZamowienia: zamow.dataZamowienia,
+                dataOplaty: zamow.dataOplaty,
+                dataDostawy: zamow.dataDostawy,
+                oplacono: zamow.oplacono,
+                status: zamow.status
             }
 
             art_rowData.push(row);
@@ -94,29 +83,27 @@ class ShowZamowienia extends Component {
     setColumns() {
         let cols = [
             {
-                headerName: "idZamowienia", field: "idZamowienia", sortable: true, filter: false
+                headerName: "idZamowienia", field: "idZamowienia", hide: true
             },
             {
-                headerName: "dataZamowienia", field: "dataZamowienia", sortable: true, filter: false
+                headerName: "Hurtownia", field: "hurtownia", sortable: true, filter: true, editable: false
             },
             {
-                headerName: "dataOplaty", field: "dataOplaty", sortable: true, filter: true, width: 80
+                headerName: "dataZamowienia", field: "dataZamowienia", sortable: true, filter: false, editable: false,
             },
             {
-                headerName: "dataDostawy", field: "dataDostawy", sortable: true, filter: true
+                headerName: "Status", field: "status", sortable: true, filter: true
             },
             {
-                headerName: "Kategoria", field: "kategoria", sortable: true, filter: true
+                headerName: "dataOplaty", field: "dataOplaty", sortable: true, filter: true, editable: false,
             },
             {
-                headerName: "Producent", field: "producent", sortable: true, filter: true
+                headerName: "Opłacone", field: "oplacono", sortable: true, filter: true
             },
             {
-                headerName: "Wymagana recepta?", field: "wymaganaRecepta", sortable: true
+                headerName: "dataDostawy", field: "dataDostawy", sortable: true, filter: true, editable: false,
             },
-            {
-                headerName: "Edit", field: "idArtykul", cellRenderer: "editRenderer", colId: "edit"
-            }
+
         ]
         return cols;
     }
@@ -134,7 +121,7 @@ class ShowZamowienia extends Component {
     }
 
     handleCreate() {
-        this.props.history.push('/artykul_edit/0');
+        this.props.history.push('/create_zamowienie');
     }
 
     onSelectionChanged() {
@@ -166,4 +153,4 @@ class ShowZamowienia extends Component {
 }
 
 
-export default connect()(ShowZamowienia);
+export default connect()(Zamowienia);
