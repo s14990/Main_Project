@@ -4,9 +4,9 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
-    "jquery": "3.3.1",
-    "react": "^16.0.0",
-    "react-dom": "^16.0.0",
+    "jquery": "^3.3.1",
+    "react": "^16.11.0",
+    "react-dom": "^16.11.0",
     "react-redux": "^5.0.6",
     "react-router-bootstrap": "^0.24.4",
     "react-router-dom": "^4.2.2",
@@ -15,7 +15,12 @@
     "reactstrap": "^6.3.0",
     "redux": "^3.7.2",
     "redux-thunk": "^2.2.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "validator": "^1.5.1",
+    "axios": "^0.19.0",
+    "ag-grid-react": "^21.2.2",
+    "ag-grid-community": "^21.2.2",
+    "react-select": "2.4.4"
   },
   "devDependencies": {
     "ajv": "^6.0.0",

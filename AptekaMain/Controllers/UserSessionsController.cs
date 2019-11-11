@@ -105,8 +105,8 @@ namespace AptekaMain.Controllers
             await _context.SaveChangesAsync();
 
             UserSession us = new UserSession() { PracownikIdPracownika=user.IdPracownika,Access=user.PoziomDostepu,Active=true} ;
-            //_context.UserSession.Add(us);
-            //await _context.SaveChangesAsync();
+            _context.UserSession.Add(us);
+            await _context.SaveChangesAsync();
 
 
             return CreatedAtAction("GetUserSession", new { id = us.IdSession }, us);

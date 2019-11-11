@@ -119,6 +119,8 @@ namespace AptekaMain.Models
 
                 entity.Property(e => e.ListaBrakowIdListy).HasColumnName("lista_brakow_id_listy");
 
+                entity.Property(e => e.ProcentBraku).HasColumnName("procent_braku");
+
                 entity.HasOne(d => d.ArtykulIdArtukuluNavigation)
                     .WithMany(p => p.Braki)
                     .HasForeignKey(d => d.ArtykulIdArtukulu)
@@ -443,6 +445,12 @@ namespace AptekaMain.Models
                     .HasColumnType("date");
 
                 entity.Property(e => e.HurtowniaIdHurtowni).HasColumnName("hurtownia_id_hurtowni");
+
+                entity.Property(e => e.Oplacono).HasColumnName("oplacono");
+
+                entity.Property(e => e.Status)
+                    .HasColumnName("status")
+                    .HasMaxLength(50);
 
                 entity.Property(e => e.SumaZamowienia).HasColumnName("suma_zamowienia");
 
