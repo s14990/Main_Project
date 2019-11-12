@@ -25,6 +25,7 @@ class Zamowienia extends Component {
         this.getTableData = this.getTableData.bind(this);
         this.handleRedirect = this.handleRedirect.bind(this);
         this.handleCreate = this.handleCreate.bind(this);
+        this.getShortDate = this.getShortDate.bind(this);
     }
 
     async componentDidMount() {
@@ -33,7 +34,7 @@ class Zamowienia extends Component {
             .then(data => {
                 this.setState({ hurtowni: data })
             });
-        await fetch('api/Zamowienies')
+        await fetch('api/Zamowienies?$orderby=idZamowienia desc')
             .then(response => response.json())
             .then(data => {
                 this.setState({ zamowienia: data, loading_data: false });
@@ -60,6 +61,12 @@ class Zamowienia extends Component {
         params.api.sizeColumnsToFit();
     };
 
+    getShortDate(json_date) {
+
+        let full_date = new Date(json_date);
+        return full_date.toLocaleDateString();
+    }
+
     setRowData() {
         var zam = this.state.zamowienia;
         var art_rowData = [];
@@ -68,9 +75,9 @@ class Zamowienia extends Component {
             var row = {
                 idZamowienia: zamow.idZamowienia,
                 hurtownia: this.findHurtowniaName(zamow.hurtowniaIdHurtowni),
-                dataZamowienia: zamow.dataZamowienia,
-                dataOplaty: zamow.dataOplaty,
-                dataDostawy: zamow.dataDostawy,
+                dataZamowienia: this.getShortDate(zamow.dataZamowienia),
+                dataOplaty: this.getShortDate(zamow.dataOplaty),
+                dataDostawy: this.getShortDate(zamow.dataDostawy),
                 oplacono: zamow.oplacono,
                 status: zamow.status
             }
@@ -92,13 +99,13 @@ class Zamowienia extends Component {
                 headerName: "dataZamowienia", field: "dataZamowienia", sortable: true, filter: false, editable: false,
             },
             {
-                headerName: "Status", field: "status", sortable: true, filter: true
+                headerName: "Status", field: "status", sortable: true, filter: true, editable: false,
             },
             {
                 headerName: "dataOplaty", field: "dataOplaty", sortable: true, filter: true, editable: false,
             },
             {
-                headerName: "Opłacone", field: "oplacono", sortable: true, filter: true
+                headerName: "Opłacone", field: "oplacono", sortable: true, filter: true, editable: false,
             },
             {
                 headerName: "dataDostawy", field: "dataDostawy", sortable: true, filter: true, editable: false,
@@ -126,10 +133,8 @@ class Zamowienia extends Component {
 
     onSelectionChanged() {
         let selectedRows = this.gridApi.getSelectedRows();
-        let selectedCell = this.gridApi.getFocusedCell();
         let selectedRow = selectedRows.pop();
-        if (selectedCell.column.colId !== 'edit')
-            this.props.history.push('/artykul_show/' + selectedRow.idArtykul);
+        this.props.history.push('/show_zamowienie/' + selectedRow.idZamowienia);
     }
 
     render() {

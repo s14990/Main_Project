@@ -36,7 +36,7 @@ class NavMenu extends React.Component {
         return (
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3" light >
-                    <Container>
+                    <Container fluid>
                         <NavbarBrand tag={Link} to="/">Apteka</NavbarBrand>
                         <NavbarToggler onClick={this.toggle} className="mr-2" />
                         <Collapse className="d-sm-inline-flex flex-sm-row-reverse" isOpen={this.state.isOpen} navbar>

@@ -28,7 +28,7 @@ namespace AptekaMain.Models
         public virtual DbSet<Rabat> Rabat { get; set; }
         public virtual DbSet<ScanRecepty> ScanRecepty { get; set; }
         public virtual DbSet<Sprzedaz> Sprzedaz { get; set; }
-        public virtual DbSet<SprzedazProduktów> SprzedazProduktów { get; set; }
+        public virtual DbSet<SprzedazProduktow> SprzedazProduktow { get; set; }
         public virtual DbSet<UserSession> UserSession { get; set; }
         public virtual DbSet<WydzialApteki> WydzialApteki { get; set; }
         public virtual DbSet<Zamowienie> Zamowienie { get; set; }
@@ -82,29 +82,35 @@ namespace AptekaMain.Models
             {
                 entity.HasKey(e => e.IdBatch);
 
-                entity.Property(e => e.IdBatch).HasColumnName("id_batch");
+                entity.Property(e => e.IdBatch)
+                    .HasColumnName("id_batch")
+                    .ValueGeneratedOnAdd();
+
+                entity.Property(e => e.IdPartia).HasColumnName("id_partia");
 
                 entity.Property(e => e.Kod).HasColumnName("kod");
 
                 entity.Property(e => e.Liczba).HasColumnName("liczba");
 
-                entity.Property(e => e.PartiaArtykulIdArtukulu).HasColumnName("partia_artykul_id_artukulu");
-
-                entity.Property(e => e.PartiaIdPartia).HasColumnName("partia_id_partia");
-
                 entity.Property(e => e.WydzialAptekiIdWydzialu).HasColumnName("wydzial_apteki_id_wydzialu");
+
+                entity.HasOne(d => d.IdBatchNavigation)
+                    .WithOne(p => p.InverseIdBatchNavigation)
+                    .HasForeignKey<Batch>(d => d.IdBatch)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("batch_partia_fk");
+
+                entity.HasOne(d => d.IdPartiaNavigation)
+                    .WithMany(p => p.Batch)
+                    .HasForeignKey(d => d.IdPartia)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK__Batch__id_partia__5224328E");
 
                 entity.HasOne(d => d.WydzialAptekiIdWydzialuNavigation)
                     .WithMany(p => p.Batch)
                     .HasForeignKey(d => d.WydzialAptekiIdWydzialu)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("batch_wydzial_apteki_fk");
-
-                entity.HasOne(d => d.Partia)
-                    .WithMany(p => p.Batch)
-                    .HasForeignKey(d => new { d.PartiaIdPartia, d.PartiaArtykulIdArtukulu })
-                    .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("batch_partia_fk");
             });
 
             modelBuilder.Entity<Braki>(entity =>
@@ -176,11 +182,9 @@ namespace AptekaMain.Models
 
             modelBuilder.Entity<Partia>(entity =>
             {
-                entity.HasKey(e => new { e.IdPartia, e.ArtykulIdArtukulu });
+                entity.HasKey(e => e.IdPartia);
 
-                entity.Property(e => e.IdPartia)
-                    .HasColumnName("id_partia")
-                    .ValueGeneratedOnAdd();
+                entity.Property(e => e.IdPartia).HasColumnName("id_partia");
 
                 entity.Property(e => e.ArtykulIdArtukulu).HasColumnName("artykul_id_artukulu");
 
@@ -193,6 +197,8 @@ namespace AptekaMain.Models
                     .HasColumnType("date");
 
                 entity.Property(e => e.Liczba).HasColumnName("liczba");
+
+                entity.Property(e => e.LiczbaWSprzedazy).HasColumnName("liczba_w_sprzedazy");
 
                 entity.Property(e => e.Status)
                     .HasColumnName("status")
@@ -363,11 +369,11 @@ namespace AptekaMain.Models
                     .HasConstraintName("sprzedaz_rabat_fk");
             });
 
-            modelBuilder.Entity<SprzedazProduktów>(entity =>
+            modelBuilder.Entity<SprzedazProduktow>(entity =>
             {
                 entity.HasKey(e => new { e.SprzedazIdSprzedazy, e.BatchWApteceIdProduktu });
 
-                entity.ToTable("Sprzedaz_produktów");
+                entity.ToTable("Sprzedaz_produktow");
 
                 entity.Property(e => e.SprzedazIdSprzedazy)
                     .HasColumnName("sprzedaz_id_sprzedazy")
@@ -376,13 +382,13 @@ namespace AptekaMain.Models
                 entity.Property(e => e.BatchWApteceIdProduktu).HasColumnName("batch_w_aptece_id_produktu");
 
                 entity.HasOne(d => d.BatchWApteceIdProduktuNavigation)
-                    .WithMany(p => p.SprzedazProduktów)
+                    .WithMany(p => p.SprzedazProduktow)
                     .HasForeignKey(d => d.BatchWApteceIdProduktu)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("sprzedaz_produktów_batch_w_aptece_fk");
 
                 entity.HasOne(d => d.SprzedazIdSprzedazyNavigation)
-                    .WithMany(p => p.SprzedazProduktów)
+                    .WithMany(p => p.SprzedazProduktow)
                     .HasForeignKey(d => d.SprzedazIdSprzedazy)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("sprzedaz_produktów_sprzedaz_fk");

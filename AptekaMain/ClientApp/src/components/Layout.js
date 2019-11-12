@@ -5,7 +5,7 @@ import NavMenu from './NavMenu';
 export default props => (
   <div>
     <NavMenu />
-    <Container>
+    <Container fluid>
       {props.children}
     </Container>
   </div>

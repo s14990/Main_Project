@@ -18,6 +18,7 @@ namespace AptekaMain.Models
         public double? CenaWSprzedazy { get; set; }
         public double? CenaWZakupu { get; set; }
         public int? Liczba { get; set; }
+        public int? LiczbaWSprzedazy { get; set; }
 
         public Artykul ArtykulIdArtukuluNavigation { get; set; }
         public Zamowienie ZamowienieIdZamowieniaNavigation { get; set; }

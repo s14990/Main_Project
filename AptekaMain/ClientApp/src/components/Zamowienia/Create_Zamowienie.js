@@ -209,7 +209,8 @@ class Create_Zamowienia extends Component {
                     cenaWSprzedazy: 0,
                     cenaWZakupu: node.data.cenaWZakupu,
                     liczba: node.data.liczba,
-                    status: "oczekiwane",
+                    liczbaWSprzedazy: node.data.liczba,
+                    status: "Oczekiwane",
                 });
                 fetch("/api/Partias", {
                     method: 'POST',

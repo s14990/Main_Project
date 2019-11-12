@@ -8,7 +8,7 @@ namespace AptekaMain.Models
         public Sprzedaz()
         {
             ScanRecepty = new HashSet<ScanRecepty>();
-            SprzedazProduktów = new HashSet<SprzedazProduktów>();
+            SprzedazProduktow = new HashSet<SprzedazProduktow>();
         }
 
         public int IdSprzedaz { get; set; }
@@ -19,6 +19,6 @@ namespace AptekaMain.Models
 
         public Rabat RabatIdRabatuNavigation { get; set; }
         public ICollection<ScanRecepty> ScanRecepty { get; set; }
-        public ICollection<SprzedazProduktów> SprzedazProduktów { get; set; }
+        public ICollection<SprzedazProduktow> SprzedazProduktow { get; set; }
     }
 }

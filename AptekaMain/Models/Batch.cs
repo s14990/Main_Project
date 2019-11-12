@@ -7,18 +7,19 @@ namespace AptekaMain.Models
     {
         public Batch()
         {
-            SprzedazProduktów = new HashSet<SprzedazProduktów>();
+            SprzedazProduktow = new HashSet<SprzedazProduktow>();
         }
 
         public int IdBatch { get; set; }
         public int? Kod { get; set; }
         public int? Liczba { get; set; }
-        public int PartiaIdPartia { get; set; }
-        public int PartiaArtykulIdArtukulu { get; set; }
         public int WydzialAptekiIdWydzialu { get; set; }
+        public int IdPartia { get; set; }
 
-        public Partia Partia { get; set; }
+        public Batch IdBatchNavigation { get; set; }
+        public Partia IdPartiaNavigation { get; set; }
         public WydzialApteki WydzialAptekiIdWydzialuNavigation { get; set; }
-        public ICollection<SprzedazProduktów> SprzedazProduktów { get; set; }
+        public Batch InverseIdBatchNavigation { get; set; }
+        public ICollection<SprzedazProduktow> SprzedazProduktow { get; set; }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace AptekaMain.Models
 {
-    public partial class SprzedazProduktów
+    public partial class SprzedazProduktow
     {
         public int SprzedazIdSprzedazy { get; set; }
         public int BatchWApteceIdProduktu { get; set; }
