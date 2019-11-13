@@ -21,6 +21,7 @@ class Show_Zamowienie extends Component {
             payment_date: '',
             receive_date: '',
             hurtownia: '',
+            status: "Oczekiwane",
             oplacone: 1,
         };
 
@@ -59,6 +60,7 @@ class Show_Zamowienie extends Component {
                     wartosc: data.sumaZamowienia,
                     oplacone: data.oplacono,
                     hurtownia: this.findHurtowniaName(data.hurtowniaIdHurtowni),
+                    status: data.status,
                     loading_data: false
 
                 });
@@ -172,7 +174,7 @@ class Show_Zamowienie extends Component {
     onSelectionChanged() {
         let selectedRows = this.gridApi.getSelectedRows();
         let selectedRow = selectedRows.pop();
-        this.props.history.push('/show_zamowienie/' + selectedRow.idArtykul);
+        this.props.history.push('/show_partia/' + selectedRow.IdPartia);
     }
 
     handleInputChange(event) {
@@ -254,20 +256,20 @@ class Show_Zamowienie extends Component {
                         </FormGroup>
                         </Col>
                 </Row>
-                <Row>
-                <div style={{ height: '500px', width: "100%" }} className="ag-theme-balham">
-                <AgGridReact
-                    columnDefs={this.state.columnDefs}
-                    rowData={this.state.rowData}
-                    context={this.state.context}
-                    frameworkComponents={this.state.frameworkComponents}
-                    onGridReady={this.onGridReady}
-                    //rowSelection={this.state.rowSelection}
-                    //onSelectionChanged={this.onSelectionChanged.bind(this)}
-                />
-                </div>
-                </Row>
-                {this.state.zamowienie.status == "Oczekiwane" && <Row>
+                    <Row>
+                        <div style={{ height: '500px', width: "100%" }} className="ag-theme-balham">
+                            <AgGridReact
+                                columnDefs={this.state.columnDefs}
+                                rowData={this.state.rowData}
+                                context={this.state.context}
+                                frameworkComponents={this.state.frameworkComponents}
+                                onGridReady={this.onGridReady}
+                                rowSelection={this.state.rowSelection}
+                                onSelectionChanged={this.onSelectionChanged.bind(this)}
+                            />
+                        </div>
+                    </Row>
+                {this.state.status == "Oczekiwane" && <Row>
                     <Col>
                         <FormGroup>
                             <Button className="btn btn-primary" type="button" onClick={this.handleUpdate}>Odzyc zamowienie</Button>

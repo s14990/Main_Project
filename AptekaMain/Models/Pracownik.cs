@@ -18,7 +18,7 @@ namespace AptekaMain.Models
         public string Haslo { get; set; }
         public string Email { get; set; }
 
-        public WydzialApteki WydzialAptekiIdWydzialuNavigation { get; set; }
+        public Wydzial WydzialAptekiIdWydzialuNavigation { get; set; }
         public ICollection<UserSession> UserSession { get; set; }
     }
 }

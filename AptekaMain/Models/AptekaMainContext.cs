@@ -30,7 +30,7 @@ namespace AptekaMain.Models
         public virtual DbSet<Sprzedaz> Sprzedaz { get; set; }
         public virtual DbSet<SprzedazProduktow> SprzedazProduktow { get; set; }
         public virtual DbSet<UserSession> UserSession { get; set; }
-        public virtual DbSet<WydzialApteki> WydzialApteki { get; set; }
+        public virtual DbSet<Wydzial> Wydzial { get; set; }
         public virtual DbSet<Zamowienie> Zamowienie { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -417,11 +417,9 @@ namespace AptekaMain.Models
                     .HasConstraintName("session_pracownik_fk");
             });
 
-            modelBuilder.Entity<WydzialApteki>(entity =>
+            modelBuilder.Entity<Wydzial>(entity =>
             {
                 entity.HasKey(e => e.IdWydzial);
-
-                entity.ToTable("Wydzial_apteki");
 
                 entity.Property(e => e.IdWydzial).HasColumnName("id_wydzial");
 

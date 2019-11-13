@@ -2,8 +2,6 @@ import React from 'react';
 import { Route } from 'react-router';
 import Layout from './components/Layout';
 import Home from './components/Home';
-import Counter from './components/Counter';
-import FetchData from './components/FetchData';
 import Artykuls from './components/Artykuls/Artykuls';
 import Add_Scans from './components/Scans/Add_Scans';
 import Scans from './components/Scans/Scans';
@@ -17,6 +15,7 @@ import Show_Lista_Brakow from './components/ListaBraki/Show_Lista_Brakow';
 import Create_Zamowienie from './components/Zamowienia/Create_Zamowienie';
 import Zamowienia from './components/Zamowienia/Zamowienia';
 import Show_Zamowienie from './components/Zamowienia/Show_Zamowienie';
+import Show_Partia from './components/Partia/Show_Partia';
 
 export default () => (
   <Layout>
@@ -34,6 +33,7 @@ export default () => (
         <Route exact path='/create_zamowienie/' component={Create_Zamowienie} />
         <Route exact path='/show_zamowienie/:id' component={Show_Zamowienie} />
         <Route exact path='/zamowienia/' component={Zamowienia} />
+        <Route exact path='/show_partia/:id' component={Show_Partia} />
         
   </Layout>
 );

@@ -52,7 +52,7 @@ class Create_Zamowienia extends Component {
     }
 
     async componentDidMount() {
-        if (this.props.location.state.init_data) {
+        if (this.props.location.state) {
             this.setState({ init_data: this.props.location.state.init_data });
         }
         await fetch('api/Artykuls')
@@ -391,7 +391,7 @@ class Create_Zamowienia extends Component {
                     <Col>
                         <FormGroup>
                             <Label htmlFor="wartosc" >Lączna Wartość</Label>
-                            <Input type="number" className="form-control" name="wartosc" value={this.state.wartosc} readonly/>
+                            <p className="form-control" name="wartosc">{this.state.wartosc} </p>
                         </FormGroup>
                     </Col>
                     <Col>

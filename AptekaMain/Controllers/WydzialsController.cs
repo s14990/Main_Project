@@ -6,64 +6,61 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AptekaMain.Models;
-using Microsoft.AspNet.OData;
 
 namespace AptekaMain.Controllers
 {
-    [EnableQuery]
-
     [Route("api/[controller]")]
     [ApiController]
-    public class WydzialAptekisController : ControllerBase
+    public class WydzialsController : ControllerBase
     {
         private readonly AptekaMainContext _context;
 
-        public WydzialAptekisController(AptekaMainContext context)
+        public WydzialsController(AptekaMainContext context)
         {
             _context = context;
         }
 
-        // GET: api/WydzialAptekis
+        // GET: api/Wydzials
         [HttpGet]
-        public IEnumerable<WydzialApteki> GetWydzialApteki()
+        public IEnumerable<Wydzial> GetWydzial()
         {
-            return _context.WydzialApteki;
+            return _context.Wydzial;
         }
 
-        // GET: api/WydzialAptekis/5
+        // GET: api/Wydzials/5
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetWydzialApteki([FromRoute] int id)
+        public async Task<IActionResult> GetWydzial([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var wydzialApteki = await _context.WydzialApteki.FindAsync(id);
+            var wydzial = await _context.Wydzial.FindAsync(id);
 
-            if (wydzialApteki == null)
+            if (wydzial == null)
             {
                 return NotFound();
             }
 
-            return Ok(wydzialApteki);
+            return Ok(wydzial);
         }
 
-        // PUT: api/WydzialAptekis/5
+        // PUT: api/Wydzials/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutWydzialApteki([FromRoute] int id, [FromBody] WydzialApteki wydzialApteki)
+        public async Task<IActionResult> PutWydzial([FromRoute] int id, [FromBody] Wydzial wydzial)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            if (id != wydzialApteki.IdWydzial)
+            if (id != wydzial.IdWydzial)
             {
                 return BadRequest();
             }
 
-            _context.Entry(wydzialApteki).State = EntityState.Modified;
+            _context.Entry(wydzial).State = EntityState.Modified;
 
             try
             {
@@ -71,7 +68,7 @@ namespace AptekaMain.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!WydzialAptekiExists(id))
+                if (!WydzialExists(id))
                 {
                     return NotFound();
                 }
@@ -84,45 +81,45 @@ namespace AptekaMain.Controllers
             return NoContent();
         }
 
-        // POST: api/WydzialAptekis
+        // POST: api/Wydzials
         [HttpPost]
-        public async Task<IActionResult> PostWydzialApteki([FromBody] WydzialApteki wydzialApteki)
+        public async Task<IActionResult> PostWydzial([FromBody] Wydzial wydzial)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            _context.WydzialApteki.Add(wydzialApteki);
+            _context.Wydzial.Add(wydzial);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetWydzialApteki", new { id = wydzialApteki.IdWydzial }, wydzialApteki);
+            return CreatedAtAction("GetWydzial", new { id = wydzial.IdWydzial }, wydzial);
         }
 
-        // DELETE: api/WydzialAptekis/5
+        // DELETE: api/Wydzials/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteWydzialApteki([FromRoute] int id)
+        public async Task<IActionResult> DeleteWydzial([FromRoute] int id)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var wydzialApteki = await _context.WydzialApteki.FindAsync(id);
-            if (wydzialApteki == null)
+            var wydzial = await _context.Wydzial.FindAsync(id);
+            if (wydzial == null)
             {
                 return NotFound();
             }
 
-            _context.WydzialApteki.Remove(wydzialApteki);
+            _context.Wydzial.Remove(wydzial);
             await _context.SaveChangesAsync();
 
-            return Ok(wydzialApteki);
+            return Ok(wydzial);
         }
 
-        private bool WydzialAptekiExists(int id)
+        private bool WydzialExists(int id)
         {
-            return _context.WydzialApteki.Any(e => e.IdWydzial == id);
+            return _context.Wydzial.Any(e => e.IdWydzial == id);
         }
     }
 }

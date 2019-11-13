@@ -18,7 +18,7 @@ namespace AptekaMain.Models
 
         public Batch IdBatchNavigation { get; set; }
         public Partia IdPartiaNavigation { get; set; }
-        public WydzialApteki WydzialAptekiIdWydzialuNavigation { get; set; }
+        public Wydzial WydzialAptekiIdWydzialuNavigation { get; set; }
         public Batch InverseIdBatchNavigation { get; set; }
         public ICollection<SprzedazProduktow> SprzedazProduktow { get; set; }
     }
