@@ -209,12 +209,12 @@ class Edit_User extends Component {
                             {this.state.err.length > 0 && <p className="Error">{this.state.err}</p>}
                         </Row>
                         <Row>
-                            {this.state.mode === "edit" &&
+                            {(this.state.mode === "edit" && this.props.auth.isAuthenticated && this.props.auth.user.access === 3 )&&
                                     <Col>
                                 <Button color="info" onClick={this.handleUpdate} disabled={this.state.disabled}>Zapisz zmiany</Button>
                                     </Col>
                             }
-                            {this.state.mode === "edit" &&
+                            {(this.state.mode === "edit" && this.props.auth.isAuthenticated && this.props.auth.user.access === 3 && this.state.poziom !== 3) &&
                                 <Col>
                                 <Button color="danger" onClick={this.handleDelete}>Usuń użytkownika</Button>
                                 </Col>
@@ -250,4 +250,4 @@ class Edit_User extends Component {
 }
 
 
-export default connect()(Edit_User);
+export default connect(state=>state)(Edit_User);

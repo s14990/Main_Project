@@ -9,6 +9,9 @@ import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import 'ag-grid-community/dist/styles/ag-theme-fresh.css';
 import 'ag-grid-community/dist/styles/ag-theme-dark.css';
 import 'ag-grid-community/dist/styles/ag-theme-blue.css';
+import { local_pl } from '../../components/grid_pl';
+
+
 class Listy_Brakow extends Component {
 
     constructor(props) {
@@ -121,13 +124,13 @@ class Listy_Brakow extends Component {
                 headerName: "ArtykulId", field: "artykulId", hide: true
             },
             {
-                headerName: "IlloscPodstawowa", field: "IlloscPodstawowa", hide: true
+                headerName: "IlloscPodstawowa", field: "IlloscPodstawowa", hide: true, filter: 'agNumberColumnFilter'
             },
             {
                 headerName: "Artykul", field: "artykul", sortable: true, filter: true, editable: false,
             },
             {
-                headerName: "Illość", field: "illosc", sortable: true, filter: true, editable: false,
+                headerName: "Illość", field: "illosc", sortable: true, filter: true, editable: false, filter: 'agNumberColumnFilter'
             },
             {
                 headerName: "ProcentBraku", field: "ProcentBraku",
@@ -155,13 +158,13 @@ class Listy_Brakow extends Component {
                 headerName: "ArtykulId", field: "artykulId", hide: true
             },
             {
-                headerName: "IlloscPodstawowa", field: "IlloscPodstawowa", hide: true
+                headerName: "IlloscPodstawowa", field: "IlloscPodstawowa", hide: true, filter: 'agNumberColumnFilter'
             },
             {
                 headerName: "Artykul", field: "artykul", sortable: true, filter: true, editable: false,
             },
             {
-                headerName: "Illość", field: "illosc", sortable: true, filter: true, editable: false,
+                headerName: "Illość", field: "illosc", sortable: true, filter: true, editable: false, filter: 'agNumberColumnFilter'
             },
             {
                 headerName: "ProcentBraku", field: "ProcentBraku", editable: false, sortable: true
@@ -233,7 +236,7 @@ class Listy_Brakow extends Component {
                 </Row>
                 <Row>
                     <Col>
-                        <div style={{ height: '500px' }} className="ag-theme-balham">
+                        <div style={{ height: '500px',width: '90%' }} className="ag-theme-balham">
                             <AgGridReact
                                 columnDefs={this.state.columnDefs2}
                                 rowData={this.state.rowData2}
@@ -241,11 +244,14 @@ class Listy_Brakow extends Component {
                                 onGridReady={this.onGridReady2}
                                 rowSelection={this.state.rowSelection}
                                 onSelectionChanged={this.onSelectionChanged2.bind(this)}
+                                pagination={true}
+                                paginationAutoPageSize={true}
+                                localeText={local_pl}
                             />
                         </div>
                     </Col>
                     <Col>
-                        <div style={{ height: '500px' }} className="ag-theme-fresh">
+                        <div style={{ height: '500px', width: '90%' }} className="ag-theme-fresh">
                             <AgGridReact
                                 columnDefs={this.state.columnDefs}
                                 rowData={this.state.rowData}
@@ -253,6 +259,9 @@ class Listy_Brakow extends Component {
                                 onGridReady={this.onGridReady}
                                 rowSelection={this.state.rowSelection}
                                 onSelectionChanged={this.onSelectionChanged.bind(this)}
+                                pagination={true}
+                                paginationAutoPageSize={true}
+                                localeText={local_pl}
                             />
                         </div>
                     </Col>

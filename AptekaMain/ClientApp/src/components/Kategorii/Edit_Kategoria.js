@@ -4,24 +4,22 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import validator from 'validator';
 
-class Edit_Hurtownia extends Component {
+class Edit_Kategoria extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            wydzialy: [], loading: false, err: '', disabled: true, mode: 'create', idHurtownia: '',
-            nazwa: '', dniNaOplate: '', dniNaDostawe: ''
+            wydzialy: [], loading: false, err: '', disabled: true, mode: 'create', idKategoria: '',
+            nazwa: ''
         };
         const hurt_id = this.props.match.params.id;
         if (hurt_id != 0) {
-            fetch('api/Hurtownias/' + hurt_id)
+            fetch('api/Kategorias/' + hurt_id)
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        idHurtownia: data.idHurtownia,
+                        idKategoria: data.idKategoria,
                         nazwa: data.nazwa,
-                        dniNaOplate: data.dniNaOplate,
-                        dniNaDostawe: data.dniNaDostawe,
                         mode: 'edit'
                     });
                 });
@@ -36,39 +34,35 @@ class Edit_Hurtownia extends Component {
     }
 
     handleCreate() {
-        fetch("api/Hurtownias/", {
+        fetch("api/Kategorias", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                nazwa: this.state.nazwa,
-                dniNaOplate: this.state.dniNaOplate,
-                dniNaDostawe: this.state.dniNaDostawe
+                nazwa: this.state.nazwa
             })
         }).then(setTimeout(this.refresh, 300));
     }
 
 
     handleUpdate() {
-        fetch("api/Hurtownias/" + this.state.idHurtownia, {
+        fetch("api/Kategorias/" + this.state.idKategoria, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                idHurtownia: this.state.idHurtownia,
-                nazwa: this.state.nazwa,
-                dniNaOplate: this.state.dniNaOplate,
-                dniNaDostawe: this.state.dniNaDostawe
+                idKategoria: this.state.idKategoria,
+                nazwa: this.state.nazwa
             })
         }).then(setTimeout(this.refresh, 300));
     }
 
     handleDelete() {
         let id = this.state.id;
-        if (window.confirm("Czy na pewno chcesz usunąć hurtownie " + this.state.idHurtownia) === true)
-            fetch('api/Hurtownias/' + this.state.idHurtownia, {
+        if (window.confirm("Czy na pewno chcesz usunąć hurtownie " + this.state.idKategoria) === true)
+            fetch('api/Kategorias/' + this.state.idKategoria, {
                 method: 'DELETE'
             }).then(setTimeout(this.refresh, 300));
     }
@@ -80,7 +74,7 @@ class Edit_Hurtownia extends Component {
 
 
     refresh() {
-        this.props.history.push("/hurtownie");
+        this.props.history.push("/kategorii");
     }
 
     handleInputChange(event) {
@@ -96,22 +90,6 @@ class Edit_Hurtownia extends Component {
                     this.setState({ nazwa: value });
                 }
                 break;
-            case 'dniNaOplate':
-                if (value < 1) {
-                    this.setState({ err: "Dostawa nie może być natychmiastowa", disabled: true, dniNaOplate: value });
-                }
-                else {
-                    this.setState({ dniNaOplate: value });
-                }
-                break;
-            case 'dniNaDostawe':
-                if (value < 1) {
-                    this.setState({ err: "Opłata nie może być natychmiastowa", disabled: true, dniNaDostawe: value });
-                }
-                else {
-                    this.setState({ dniNaDostawe: value });
-                }
-                break;
             default:
                 console.log("Unknown");
                 break;
@@ -120,13 +98,6 @@ class Edit_Hurtownia extends Component {
     }
 
     validateData() {
-        this.setState({ err: "", disabled: false });
-        if (this.state.nazwa.length <= 1)
-            this.setState({ err: "Za krótka nazwa", disabled: true });
-        if (this.state.dniNaDostawe < 1)
-            this.setState({ err: "Dostawa nie może być natychmiastowa", disabled: true });
-        if (this.state.dniNaOplate < 1)
-            this.setState({ err: "Opłata nie może być natychmiastowa", disabled: true });
 
     }
 
@@ -135,18 +106,10 @@ class Edit_Hurtownia extends Component {
         return (
             <Form>
                 <Col sm={{ size: 6, order: 2, offset: 1 }}>>
-                {this.state.mode==='edit'? <h3>Dodaj nową Hurtownie</h3> : <h3>Edytuj Hurtownie</h3>}
-                <FormGroup>
+                {this.state.mode === 'edit' ? <h3>Dodaj nową Kategorię</h3> : <h3>Edytuj Kategorię</h3>}
+                    <FormGroup>
                         <Label htmlFor="nazwa">Nazwa</Label>
                         <Input type="text" className="form-control" name="nazwa" value={this.state.nazwa} onChange={this.handleInputChange} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label htmlFor="dniNaDostawe">Dni na Dostawe</Label>
-                        <Input type="number" className="form-control" name="dniNaDostawe" pattern="[0-9]*" value={this.state.dniNaDostawe} onChange={this.handleInputChange} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label htmlFor="dniNaOplate">Dni na dostawe</Label>
-                        <Input type="number" className="form-control" name="dniNaOplate" pattern="[0-9]*" value={this.state.dniNaOplate} onChange={this.handleInputChange} />
                     </FormGroup>
                     {this.state.err.length > 0 && <p className="Error">{this.state.err}</p>}
                     <FormGroup>
@@ -157,7 +120,7 @@ class Edit_Hurtownia extends Component {
                             </div>
                         }
                         {this.state.mode === "create" &&
-                            <Button color="primary" type="button" onClick={this.handleCreate} disabled={this.state.disabled}>Dodaj Hurtownie </Button>
+                            <Button color="primary" type="button" onClick={this.handleCreate} disabled={this.state.disabled}>Dodaj Kategorie</Button>
                         }
                         <Button color="info" type="button" onClick={this.handleReturn}>Powrót</Button>
                     </FormGroup>
@@ -182,4 +145,4 @@ class Edit_Hurtownia extends Component {
 }
 
 
-export default connect()(Edit_Hurtownia);
+export default connect()(Edit_Kategoria);

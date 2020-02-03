@@ -25,6 +25,12 @@ import Sprzedazy from './components/Sprzedaz/Sprzedazy';
 import Sales_Charts from './components/Charts/Sales_Charts';
 import Logout from './components/Login/Logout';
 import Rabats from './components/Rabat/Rabats';
+import Wydzialy from './components/Wydzialy/Wydzialy';
+import Edit_Wydzial from './components/Wydzialy/Edit_Wydzial';
+import Producents from './components/Producent/Producents';
+import Edit_Producent from './components/Producent/Edit_Producent';
+import Kategorii from './components/Kategorii/Kategorii';
+import Edit_Kategoria from './components/Kategorii/Edit_Kategoria';
 
 
 export default () => (
@@ -53,5 +59,11 @@ export default () => (
         <Route exact path='/sprzedazy/' component={Sprzedazy} />
         <Route exact path='/sales_charts' component={Sales_Charts} />
         <Route exact path='/rabats' component={Rabats} />
+        <Route exact path='/wydzialy' component={Wydzialy} />
+        <Route exact path='/wydzial_edit/:id' component={Edit_Wydzial} />
+        <Route exact path='/producents' component={Producents} />
+        <Route exact path='/producent_edit/:id' component={Edit_Producent} />
+        <Route exact path='/kategorii' component={Kategorii} />
+        <Route exact path='/kategoria_edit/:id' component={Edit_Kategoria} />
   </Layout>
 );

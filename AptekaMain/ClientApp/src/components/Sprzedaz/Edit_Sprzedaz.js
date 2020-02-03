@@ -1,5 +1,5 @@
 ﻿import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText, Table, Row, Col, Container } from 'reactstrap';
+import { Button, Table, Row, Col, Container } from 'reactstrap';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { AgGridReact } from 'ag-grid-react';
@@ -229,11 +229,11 @@ class Edit_Sprzedaz extends Component {
                             </Row>
                             {this.state.WymaganaRecepta &&
                                 <Row>
-                                    <p>Wymaqgana Recepta</p>
+                                    <p>Wymagana Recepta</p>
                                 </Row>
                             }
                             <Row>
-                                <div style={{ height: '500px', width: '500px' }} className="ag-theme-balham">
+                                <div style={{ height: '500px', width: '510px' }} className="ag-theme-balham">
                                     <AgGridReact
                                         columnDefs={this.state.columnDefs}
                                         rowData={this.state.rowData}
@@ -249,7 +249,7 @@ class Edit_Sprzedaz extends Component {
                                     <p>Skany</p>
                                     <Row>
                                     <input type="file" onChange={this.fileChangedHandler} accept="image/*" />
-                                        <Button color="success" onClick={this.uploadHandler} disabled={!this.state.file_ready}> Dodaj Skan</Button>
+                                        <Button color="success" onClick={this.uploadHandler} disabled={!this.state.file_ready}>Dodaj Skan</Button>
                                     </Row>
                                     <Row>
                                         {this.state.scans.length > 0 &&

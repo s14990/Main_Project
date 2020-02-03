@@ -1,11 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Button, Form, FormGroup, Label, Input, FormText, Table, Container, Row, Col } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Container, Row, Col } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
 import DatePicker from 'react-datepicker';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import { local_pl } from '../../components/grid_pl';
+
 
 class Show_Partia extends Component {
 
@@ -213,19 +214,19 @@ class Show_Partia extends Component {
                     </Col>
                     <Col>
                         <FormGroup>
-                            <Label htmlFor="Liczba">Illosc zakupu</Label>
+                            <Label htmlFor="Liczba">Iłosc zakupu</Label>
                             <p className="form-control" name="Liczba"> {this.state.Liczba} </p>
                         </FormGroup>
                     </Col>
                     <Col>
                         <FormGroup>
-                            <Label htmlFor="CenaWSprzedazy" >Cena w Sprzedazy</Label>
+                            <Label htmlFor="CenaWSprzedazy" >Cena w Sprzedaży</Label>
                             <p className="form-control" name="Liczba"> {this.state.CenaWSprzedazy} </p>
                         </FormGroup>
                     </Col>
                     <Col>
                         <FormGroup>
-                            <Label htmlFor="LiczbaWSprzedazy">Illosc w Sprzedazy</Label>
+                            <Label htmlFor="LiczbaWSprzedazy">Iłosc w Sprzedaży</Label>
                             <p className="form-control" name="LiczbaWSprzedazy"> {this.state.LiczbaWSprzedazy} </p>
                         </FormGroup>
                     </Col>
@@ -239,14 +240,17 @@ class Show_Partia extends Component {
                                 context={this.state.context}
                                 frameworkComponents={this.state.frameworkComponents}
                                 onGridReady={this.onGridReady}
-                            //  rowSelection={this.state.rowSelection}
-                            //  onSelectionChanged={this.onSelectionChanged.bind(this)}
+                                //  rowSelection={this.state.rowSelection}
+                                //  onSelectionChanged={this.onSelectionChanged.bind(this)}
+                                pagination={true}
+                                paginationAutoPageSize={true}
+                                localeText={local_pl}
                             />
                         </div>
                     </Row>
                 }
                 <Row>
-                    <Button color="secondary" onClick={this.handleReturn.bind(this)}>Return</Button>
+                    <Button color="secondary" onClick={this.handleReturn.bind(this)}>Powrót</Button>
                 </Row>
             </Container>
         );

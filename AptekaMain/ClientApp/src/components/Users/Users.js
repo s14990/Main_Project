@@ -1,10 +1,11 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Button, Form, FormGroup, Label, Input, FormText, Table } from 'reactstrap';
+import { Button, FormGroup, Container } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import { local_pl } from '../../components/grid_pl';
+
 
 class Users extends Component {
 
@@ -100,7 +101,7 @@ class Users extends Component {
     setColumns() {
         let cols = [
             {
-                headerName: "Numer", field: "id", sortable: true, filter: true
+                headerName: "Numer", field: "id", sortable: true, filter: true,width:100
             },
             {
                 headerName: "Imie", field: "imie", sortable: true, filter: true
@@ -109,7 +110,7 @@ class Users extends Component {
                 headerName: "Nazwisko", field: "nazwisko", sortable: true, filter: true,
             },
             {
-                headerName: "Stanowisko", field: "poziomDostepu", sortable: true, filter: true
+                headerName: "Stanowisko", field: "poziomDostepu", sortable: true, filter: true, width: 150
             },
             {
                 headerName: "Wydzial Apteki", field: "wydzial", sortable: true, filter: true
@@ -144,21 +145,34 @@ class Users extends Component {
 
     }
 
+    onBtnExport() {
+        var params = { suppressQuotes: true };
+        this.gridApi.exportDataAsCsv(params);
+    }
+
     render() {
         return (
-            <div style={{ height: '500px' }} className="ag-theme-balham">
-                <AgGridReact
-                    columnDefs={this.state.columnDefs}
-                    rowData={this.state.rowData}
-                    context={this.state.context}
-                    onGridReady={this.onGridReady}
-                    rowSelection={this.state.rowSelection}
-                    onSelectionChanged={this.onSelectionChanged.bind(this)}
-                />
-                <FormGroup>
-                    <Button className="btn btn-primary" type="button" onClick={this.handleCreate}>Dodaj Użytkownika</Button>
-                </FormGroup>
-            </div>
+            <Container>
+                <div style={{ height: '500px',width: '95%' }} className="ag-theme-balham">
+                    <div style={{ margin: "10px 0" }}>
+                        <Button onClick={this.onBtnExport.bind(this)} color='info'>Eksportuj Dane</Button>
+                    </div>
+                    <AgGridReact
+                        columnDefs={this.state.columnDefs}
+                        rowData={this.state.rowData}
+                        context={this.state.context}
+                        onGridReady={this.onGridReady}
+                        rowSelection={this.state.rowSelection}
+                        onSelectionChanged={this.onSelectionChanged.bind(this)}
+                        pagination={true}
+                        paginationAutoPageSize={true}
+                        localeText={local_pl}
+                    />
+                    <FormGroup>
+                        <Button className="btn btn-primary" type="button" onClick={this.handleCreate}>Dodaj Użytkownika</Button>
+                    </FormGroup>
+                </div>
+            </Container>
         );
     }
 }

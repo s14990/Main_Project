@@ -10,6 +10,9 @@ import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import 'ag-grid-community/dist/styles/ag-theme-fresh.css';
 import 'ag-grid-community/dist/styles/ag-theme-dark.css';
 import 'ag-grid-community/dist/styles/ag-theme-blue.css';
+import { local_pl } from '../../components/grid_pl';
+
+
 
 class Batches extends Component {
 
@@ -68,8 +71,8 @@ class Batches extends Component {
 
     async componentDidMount() {
         const wydzial_id = this.props.match.params.id;
-        this.setState({ idWydzialu: 1 });
-        await fetch('api/Batches?$expand=idPartiaNavigation&$filter=wydzialAptekiIdWydzialu eq 1 and liczba ne 0')
+        this.setState({ idWydzialu: wydzial_id });
+        await fetch('api/Batches?$expand=idPartiaNavigation&$filter=wydzialAptekiIdWydzialu eq ' + wydzial_id + ' and liczba ne 0')
             .then(response => response.json())
             .then(data => {
                 this.setState({ batches: data });
@@ -86,6 +89,32 @@ class Batches extends Component {
             });
         this.getTableData();
     }
+
+
+    async componentDidUpdate(prevProps, prevState) {
+        if (prevProps.match.params.id !== this.props.match.params.id) {
+            const wydzial_id = this.props.match.params.id;
+            this.setState({ idWydzialu: wydzial_id });
+            await fetch('api/Batches?$expand=idPartiaNavigation&$filter=wydzialAptekiIdWydzialu eq ' + wydzial_id + ' and liczba ne 0')
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({ batches: data });
+                });
+            await fetch('api/Artykuls?$expand=kategoriaIdKategoriaNavigation, producentIdProducentNavigation')
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({ artykuls: data });
+                });
+            await fetch("api/Rabats?$filter=czyJestAktywny eq '1'")
+                .then(response => response.json())
+                .then(data => {
+                    this.setState({ rabats: data });
+                });
+            this.getTableData();
+        }
+    }
+
+
 
     findArtykulName(id) {
         var arts = this.state.artykuls;
@@ -501,10 +530,10 @@ class Batches extends Component {
             <Container fluid>
                 <Row>
                     <Col>
-                        <h4>Wydzial </h4>
+                        <h4>Wydział {this.state.idWydzialu}</h4>
                     </Col>
                     <Col>
-                        <h4>Sprzedaz</h4>
+                        <h4>Sprzedaż</h4>
                     </Col>
                 </Row>
                 <Row>
@@ -526,6 +555,9 @@ class Batches extends Component {
                                     return null;
                                 }
                                 }
+                                pagination={true}
+                                paginationAutoPageSize={true}
+                                localeText={local_pl}
                             />
                         </div>
                     </Col>
@@ -546,6 +578,7 @@ class Batches extends Component {
                                         e.node.setSelected(true)
                                     }
                                 }}
+                                localeText={local_pl}
                             />
                         </div>
                     </Col>

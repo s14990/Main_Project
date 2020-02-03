@@ -12,7 +12,7 @@ export default class Powiadomienie_List extends Component {
             return <div key={index} className="p-3 my-2 rounded">
                 <Card>
                     <CardBody>
-                        <CardTitle> Wydzial: {pow.wydzialIdWydzial}</CardTitle>
+                        <CardTitle> Wydział: {pow.wydzialIdWydzial}</CardTitle>
                         <CardSubtitle>{date.toLocaleDateString()}</CardSubtitle>
                         <CardText>{pow.tresc}</CardText>
                     </CardBody>

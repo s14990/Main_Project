@@ -1,8 +1,6 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Button, Form, FormGroup, Label, Input, FormText, Table, Container, Col, Row } from 'reactstrap';
-import { AgGridReact } from 'ag-grid-react';
+import { Container, Col, Row } from 'reactstrap';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import {
@@ -31,8 +29,15 @@ class Sales_Charts extends Component {
                     key: 2,
                     month: "Styczeń",
                     start: "2020-01-01T00:00:00Z",
-                    finish: "2020-02-01T00:00:00Z"
+                    finish: "2020-01-31T00:00:00Z"
                 },
+                {
+                    key: 2,
+                    month: "Luty",
+                    start: "2020-02-01T00:00:00Z",
+                    finish: "2020-03-01T00:00:00Z"
+
+                }
             ],
             activeIndex: 0,
             graphs: []
@@ -79,9 +84,13 @@ class Sales_Charts extends Component {
         let rdata = [];
         for (var i = 0; i < data_arr.length; i++) {
             var r = data_arr[i];
+            var n = r.Total;
+            var y = parseFloat(n);
+            var c1 = n.toFixed(2);
+            var c2 = parseFloat(c1);
             var row = {
                 name: r.TypOplaty,
-                value: r.Total
+                value: c2
             }
             rdata.push(row);
         }
@@ -128,8 +137,9 @@ class Sales_Charts extends Component {
             console.log(p_data);
             let obj =
                 <Row>
-                    <Col>
-                        Miesiąc: {init_data[a].month}
+                    <h4>{init_data[a].month}</h4>
+                    <Col xs="4">
+                        Recepty
                         <ResponsiveContainer width="100%" height={250}>
                             <PieChart height={250}>
                                 <Pie
@@ -175,66 +185,53 @@ class Sales_Charts extends Component {
                             </PieChart>
                         </ResponsiveContainer>
                     </Col>
-                    <Col>
+                    <Col xs="4">
                         Typ Opłaty
-                    <PieChart width={500} height={400}>
-                            <Pie
-                                activeIndex={this.state.activeIndex}
-                                activeShape={({
-                                    cx, cy, midAngle, innerRadius, outerRadius, startAngle, endAngle,
-                                    fill, payload, percent, value
-                                }) => {
-                                    const RADIAN = Math.PI / 180;
-                                    const sin = Math.sin(-RADIAN * midAngle);
-                                    const cos = Math.cos(-RADIAN * midAngle);
-                                    const sx = cx + (outerRadius + 10) * cos;
-                                    const sy = cy + (outerRadius + 10) * sin;
-                                    const mx = cx + (outerRadius + 30) * cos;
-                                    const my = cy + (outerRadius + 30) * sin;
-                                    const ex = mx + (cos >= 0 ? 1 : -1) * 22;
-                                    const ey = my;
-                                    const textAnchor = cos >= 0 ? 'start' : 'end';
+                      <ResponsiveContainer width="100%" height={250}>
+                            <PieChart height={250}>
+                                <Pie
+                                    data={p_data}
+                                    cx="50%"
+                                    cy="50%"
+                                    outerRadius={100}
+                                    fill="#8884d8"
+                                    dataKey="value"
+                                    isAnimationActive={false}
+                                    label={({
+                                        cx,
+                                        cy,
+                                        midAngle,
+                                        innerRadius,
+                                        outerRadius,
+                                        value,
+                                        index
+                                    }) => {
+                                        console.log("handling label?");
+                                        const RADIAN = Math.PI / 180;
+                                        const radius = 25 + innerRadius + (outerRadius - innerRadius);
+                                        const x = cx + radius * Math.cos(-midAngle * RADIAN);
+                                        const y = cy + radius * Math.sin(-midAngle * RADIAN);
 
-                                    return (
-                                        <g>
-                                            <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>{payload.name}</text>
-                                            <Sector
-                                                cx={cx}
-                                                cy={cy}
-                                                innerRadius={innerRadius}
-                                                outerRadius={outerRadius}
-                                                startAngle={startAngle}
-                                                endAngle={endAngle}
-                                                fill={fill}
-                                            />
-                                            <Sector
-                                                cx={cx}
-                                                cy={cy}
-                                                startAngle={startAngle}
-                                                endAngle={endAngle}
-                                                innerRadius={outerRadius + 6}
-                                                outerRadius={outerRadius + 10}
-                                                fill={fill}
-                                            />
-                                            <path d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`} stroke={fill} fill="none" />
-                                            <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
-                                            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} textAnchor={textAnchor} fill="#333">{`${value}`}</text>
-                                            <text x={ex + (cos >= 0 ? 1 : -1) * 12} y={ey} dy={18} textAnchor={textAnchor} fill="#999">
-                                                {`(${(percent * 100).toFixed(2)}%)`}
-                                            </text>
-                                        </g>
-                                    );
-                                }}
-                                data={p_data}
-                                cx={200}
-                                cy={200}
-                                innerRadius={60}
-                                outerRadius={80}
-                                fill="#8884d8"
-                                dataKey="value"
-                                onMouseEnter={this.onPieEnter}
-                            />
-                        </PieChart>
+                                        return (
+                                            <text
+                                                x={x}
+                                                y={y}
+                                                fill="#8884d8"
+                                                textAnchor={x > cx ? "start" : "end"}
+                                                dominantBaseline="central"
+                                            >
+                                                {p_data[index].name} ({value})
+                                        </text>
+                                        );
+                                    }}
+                                >
+                                    {
+                                        r_data.map((entry, index) => <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />)
+                                    }
+                                </Pie>
+                            </PieChart>
+                        </ResponsiveContainer>
+
                     </Col>
                 </Row>
             console.log(obj);

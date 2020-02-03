@@ -24,7 +24,8 @@ class NavMenu extends React.Component {
 
         this.toggle = this.toggle.bind(this);
         this.state = {
-            isOpen: false
+            isOpen: false,
+            wydzialy: [],
         };
     }
     toggle() {
@@ -32,7 +33,39 @@ class NavMenu extends React.Component {
             isOpen: !this.state.isOpen
         });
     }
+
+    async componentDidMount() {
+        await fetch('api/Wydzials')
+            .then(response => response.json())
+            .then(data => {
+                this.setState({ wydzialy: data });
+            });
+    }
     render() {
+        let spr_links = ''
+        if (this.props.auth.isAuthenticated && this.props.auth.user.access === 1) {
+            spr_links = <DropdownItem>
+                <NavLink tag={Link} className="text-dark" to={"/batches/" + this.props.auth.user.pracownikIdPracownikaNavigation.wydzialAptekiIdWydzialu}>Nowy sprzedaż</NavLink>
+            </DropdownItem>
+        }
+        if (this.props.auth.isAuthenticated && this.props.auth.user.access > 1) {
+            spr_links = this.state.wydzialy.map(wydzial =>
+                <DropdownItem key={wydzial.idWydzial}>
+                    <NavLink tag={Link} className="text-dark" to={"/batches/" + wydzial.idWydzial}>Nowy sprzedaż w wydziale {wydzial.idWydzial}</NavLink>
+                </DropdownItem>
+            )
+        }
+
+        let towar_links = '';
+        let towar_links2 = '';
+        if (this.props.auth.isAuthenticated && this.props.auth.user.access > 1) {
+            towar_links = <DropdownItem>
+                <NavLink tag={Link} className="text-dark" to="/producents">Producenci</NavLink>
+            </DropdownItem>
+            towar_links2 = <DropdownItem>
+                <NavLink tag={Link} className="text-dark" to="/kategorii">Kategorii</NavLink>
+            </DropdownItem>
+        }
         return (
             <header>
                 <Navbar className="navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow navbar-dark bg-dark" dark>
@@ -50,10 +83,12 @@ class NavMenu extends React.Component {
                                             <DropdownItem>
                                                 <NavLink tag={Link} className="text-dark" to="/artykuls">Artykuły</NavLink>
                                             </DropdownItem>
+                                            {towar_links}
+                                            {towar_links2}
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 }
-                                {this.props.auth.isAuthenticated &&
+                                {(this.props.auth.isAuthenticated && this.props.auth.user.access > 1) &&
                                     <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav caret>
                                             Zamowienia
@@ -68,6 +103,9 @@ class NavMenu extends React.Component {
                                             <DropdownItem>
                                                 <NavLink tag={Link} className="text-dark" to="/zamowienia">Zamowienia</NavLink>
                                             </DropdownItem>
+                                            <DropdownItem>
+                                                <NavLink tag={Link} className="text-dark" to="/hurtownie">Hurtownie</NavLink>
+                                            </DropdownItem>
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 }
@@ -75,57 +113,55 @@ class NavMenu extends React.Component {
                                     <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav caret>
                                             Sprzedaż
-                                    </DropdownToggle>
+                                        </DropdownToggle>
                                         <DropdownMenu right>
+                                            {spr_links}
                                             <DropdownItem>
-                                                <NavLink tag={Link} className="text-dark" to="/batches/1">Sprzedaz w aptece</NavLink>
+                                                <NavLink tag={Link} className="text-dark" to="/sprzedazy">Sprzedaży</NavLink>
                                             </DropdownItem>
                                             <DropdownItem>
-                                                <NavLink tag={Link} className="text-dark" to="/sprzedazy">Sprzedazy</NavLink>
-                                        </DropdownItem>
-                                        <DropdownItem>
-                                            <NavLink tag={Link} className="text-dark" to="/rabats">Rabaty</NavLink>
-                                        </DropdownItem>
+                                                <NavLink tag={Link} className="text-dark" to="/rabats">Rabaty</NavLink>
+                                            </DropdownItem>
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 }
-                                {this.props.auth.isAuthenticated &&
+                                {(this.props.auth.isAuthenticated && this.props.auth.user.access === 3) &&
                                     <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav caret>
                                             Administrowanie
-                                    </DropdownToggle>
+                                        </DropdownToggle>
                                         <DropdownMenu right>
                                             <DropdownItem>
-                                                <NavLink tag={Link} className="text-dark" to="/users">Uzytkowniki</NavLink>
+                                                <NavLink tag={Link} className="text-dark" to="/users">Uzytkownicy</NavLink>
                                             </DropdownItem>
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 }
-                                {this.props.auth.isAuthenticated &&
+                                {(this.props.auth.isAuthenticated && this.props.auth.user.access > 1) &&
                                     <UncontrolledDropdown nav inNavbar>
                                         <DropdownToggle nav caret>
-                                            Charts
-                                    </DropdownToggle>
+                                            Statystyki
+                                        </DropdownToggle>
                                         <DropdownMenu right>
                                             <DropdownItem>
-                                                <NavLink tag={Link} className="text-dark" to="/sales_charts">Sprzedaz</NavLink>
+                                                <NavLink tag={Link} className="text-dark" to="/sales_charts">Statystyki Sprzedaży</NavLink>
                                             </DropdownItem>
                                         </DropdownMenu>
                                     </UncontrolledDropdown>
                                 }
                                 {!this.props.auth.isAuthenticated &&
                                     <NavItem>
-                                        <NavLink tag={Link} className="text-dark" to="/login">Login</NavLink>
+                                        <NavLink tag={Link} className="text-dark" to="/login">Logowanie</NavLink>
                                     </NavItem>
                                 }
                                 {this.props.auth.isAuthenticated &&
                                     <NavItem>
-                                        <NavLink tag={Link} className="text-dark" to={"/user_edit/" + this.props.auth.user.pracownikIdPracownika}> Twoj Profil </NavLink>
+                                        <NavLink tag={Link} className="text-dark" to={"/user_edit/" + this.props.auth.user.pracownikIdPracownika}>Twój Profil</NavLink>
                                     </NavItem>
                                 }
                                 {this.props.auth.isAuthenticated &&
                                     <NavItem>
-                                        <NavLink tag={Link} to="/logout">Logout</NavLink>
+                                        <NavLink tag={Link} to="/logout">Wyłoguj się</NavLink>
                                     </NavItem>
                                 }
                             </ul>

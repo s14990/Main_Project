@@ -4,24 +4,24 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import validator from 'validator';
 
-class Edit_Hurtownia extends Component {
+class Edit_Wydzial extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            wydzialy: [], loading: false, err: '', disabled: true, mode: 'create', idHurtownia: '',
-            nazwa: '', dniNaOplate: '', dniNaDostawe: ''
+            wydzialy: [], loading: false, err: '', disabled: true, mode: 'create', idWydzial: '',
+            adres: '',
+            kodPocztowy: '',
         };
         const hurt_id = this.props.match.params.id;
         if (hurt_id != 0) {
-            fetch('api/Hurtownias/' + hurt_id)
+            fetch('api/Wydzials/' + hurt_id)
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        idHurtownia: data.idHurtownia,
-                        nazwa: data.nazwa,
-                        dniNaOplate: data.dniNaOplate,
-                        dniNaDostawe: data.dniNaDostawe,
+                        idWydzial: data.idWydzial,
+                        adres: data.adres,
+                        kodPocztowy: data.kodPocztowy,
                         mode: 'edit'
                     });
                 });
@@ -36,39 +36,37 @@ class Edit_Hurtownia extends Component {
     }
 
     handleCreate() {
-        fetch("api/Hurtownias/", {
+        fetch("api/Wydzials", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                nazwa: this.state.nazwa,
-                dniNaOplate: this.state.dniNaOplate,
-                dniNaDostawe: this.state.dniNaDostawe
+                adres: this.state.adres,
+                kodPocztowy: this.state.kodPocztowy
             })
         }).then(setTimeout(this.refresh, 300));
     }
 
 
     handleUpdate() {
-        fetch("api/Hurtownias/" + this.state.idHurtownia, {
+        fetch("api/Wydzials/" + this.state.idWydzial, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                idHurtownia: this.state.idHurtownia,
-                nazwa: this.state.nazwa,
-                dniNaOplate: this.state.dniNaOplate,
-                dniNaDostawe: this.state.dniNaDostawe
+                idWydzial: this.state.idWydzial,
+                adres: this.state.adres,
+                kodPocztowy: this.state.kodPocztowy
             })
         }).then(setTimeout(this.refresh, 300));
     }
 
     handleDelete() {
         let id = this.state.id;
-        if (window.confirm("Czy na pewno chcesz usunąć hurtownie " + this.state.idHurtownia) === true)
-            fetch('api/Hurtownias/' + this.state.idHurtownia, {
+        if (window.confirm("Czy na pewno chcesz usunąć Wydzial " + this.state.idWydzial) === true)
+            fetch('api/Wydzials/' + this.state.idHurtownia, {
                 method: 'DELETE'
             }).then(setTimeout(this.refresh, 300));
     }
@@ -80,7 +78,7 @@ class Edit_Hurtownia extends Component {
 
 
     refresh() {
-        this.props.history.push("/hurtownie");
+        this.props.history.push("/wydzialy");
     }
 
     handleInputChange(event) {
@@ -89,27 +87,20 @@ class Edit_Hurtownia extends Component {
         let value = target.value;
         this.setState({ err: "", disabled: false });
         switch (name) {
-            case 'nazwa':
+            case 'adres':
                 if (value.length <= 1) {
-                    this.setState({ err: "Za krótka nazwa", disabled: true, nazwa: value });
+                    this.setState({ err: "Za krótki adres", disabled: true, adres: value });
                 } else {
-                    this.setState({ nazwa: value });
+                    this.setState({ adres: value });
                 }
                 break;
-            case 'dniNaOplate':
-                if (value < 1) {
-                    this.setState({ err: "Dostawa nie może być natychmiastowa", disabled: true, dniNaOplate: value });
+            case 'kodPocztowy':
+                console.log(value);
+                if (value.length < 3) {
+                    this.setState({ err: "Nieprawidłowy index pocztowy", disabled: true, kodPocztowy: value });
                 }
                 else {
-                    this.setState({ dniNaOplate: value });
-                }
-                break;
-            case 'dniNaDostawe':
-                if (value < 1) {
-                    this.setState({ err: "Opłata nie może być natychmiastowa", disabled: true, dniNaDostawe: value });
-                }
-                else {
-                    this.setState({ dniNaDostawe: value });
+                    this.setState({ kodPocztowy: value });
                 }
                 break;
             default:
@@ -120,13 +111,6 @@ class Edit_Hurtownia extends Component {
     }
 
     validateData() {
-        this.setState({ err: "", disabled: false });
-        if (this.state.nazwa.length <= 1)
-            this.setState({ err: "Za krótka nazwa", disabled: true });
-        if (this.state.dniNaDostawe < 1)
-            this.setState({ err: "Dostawa nie może być natychmiastowa", disabled: true });
-        if (this.state.dniNaOplate < 1)
-            this.setState({ err: "Opłata nie może być natychmiastowa", disabled: true });
 
     }
 
@@ -135,18 +119,14 @@ class Edit_Hurtownia extends Component {
         return (
             <Form>
                 <Col sm={{ size: 6, order: 2, offset: 1 }}>>
-                {this.state.mode==='edit'? <h3>Dodaj nową Hurtownie</h3> : <h3>Edytuj Hurtownie</h3>}
-                <FormGroup>
-                        <Label htmlFor="nazwa">Nazwa</Label>
-                        <Input type="text" className="form-control" name="nazwa" value={this.state.nazwa} onChange={this.handleInputChange} />
+                {this.state.mode === 'edit' ? <h3>Dodaj nowy Wydzial</h3> : <h3>Edytuj Wydzial</h3>}
+                    <FormGroup>
+                        <Label htmlFor="adres">Adres</Label>
+                        <Input type="text" className="form-control" name="adres" value={this.state.adres} onChange={this.handleInputChange} />
                     </FormGroup>
                     <FormGroup>
-                        <Label htmlFor="dniNaDostawe">Dni na Dostawe</Label>
-                        <Input type="number" className="form-control" name="dniNaDostawe" pattern="[0-9]*" value={this.state.dniNaDostawe} onChange={this.handleInputChange} />
-                    </FormGroup>
-                    <FormGroup>
-                        <Label htmlFor="dniNaOplate">Dni na dostawe</Label>
-                        <Input type="number" className="form-control" name="dniNaOplate" pattern="[0-9]*" value={this.state.dniNaOplate} onChange={this.handleInputChange} />
+                        <Label htmlFor="kodPocztowy">Kod Pocztowy</Label>
+                        <Input type="text" className="form-control" name="kodPocztowy" pattern="[0-9]*-[0-9]*" value={this.state.kodPocztowy} onChange={this.handleInputChange} />
                     </FormGroup>
                     {this.state.err.length > 0 && <p className="Error">{this.state.err}</p>}
                     <FormGroup>
@@ -157,7 +137,7 @@ class Edit_Hurtownia extends Component {
                             </div>
                         }
                         {this.state.mode === "create" &&
-                            <Button color="primary" type="button" onClick={this.handleCreate} disabled={this.state.disabled}>Dodaj Hurtownie </Button>
+                            <Button color="primary" type="button" onClick={this.handleCreate} disabled={this.state.disabled}>Dodaj Wydział</Button>
                         }
                         <Button color="info" type="button" onClick={this.handleReturn}>Powrót</Button>
                     </FormGroup>
@@ -182,4 +162,4 @@ class Edit_Hurtownia extends Component {
 }
 
 
-export default connect()(Edit_Hurtownia);
+export default connect()(Edit_Wydzial);

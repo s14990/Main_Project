@@ -5,6 +5,8 @@ import { Button, Form, FormGroup, Label, Input, FormText, Table } from 'reactstr
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import { local_pl } from '../../components/grid_pl';
+
 
 class Listy_Brakow extends Component {
 
@@ -92,6 +94,9 @@ class Listy_Brakow extends Component {
                     onGridReady={this.onGridReady}
                     rowSelection={this.state.rowSelection}
                     onSelectionChanged={this.onSelectionChanged.bind(this)}
+                    pagination={true}
+                    paginationAutoPageSize={true}
+                    localeText={local_pl}
                 />
             </div>
         );

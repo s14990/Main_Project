@@ -1,19 +1,19 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Form, FormGroup, Label, Input, FormText, Table ,Container, h2} from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, FormText, Table, Container, h2 } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import { local_pl } from '../../components/grid_pl';
 
 
-class Hurtownie extends Component {
+class Producents extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            hurtownie: [], loading_data: true, loading_table: true,
+            producents: [], loading_data: true, loading_table: true,
             columnDefs: [],
             rowData: [],
             context: { componentParent: this },
@@ -28,17 +28,17 @@ class Hurtownie extends Component {
     }
 
     async componentDidMount() {
-        await fetch('api/Hurtownias')
+        await fetch('api/Producents')
             .then(response => response.json())
             .then(data => {
-                this.setState({ hurtownie: data })
+                this.setState({ producents: data })
             });
         this.getTableData();
     }
 
 
     refresh() {
-        this.props.history.push("/hurtownie");
+        this.props.history.push("/producents");
     }
 
     onGridReady = params => {
@@ -48,35 +48,31 @@ class Hurtownie extends Component {
     };
 
     setRowData() {
-        var hurtownie = this.state.hurtownie;
-        var hurtownie_rowData = [];
-        for (var i = 0; i < hurtownie.length; i++) {
-            var hurt = hurtownie[i];
+        var producents = this.state.producents;
+        var producents_rowData = [];
+        for (var i = 0; i < producents.length; i++) {
+            var prod = producents[i];
             var row = {
-                idHurtownia: hurt.idHurtownia,
-                nazwa: hurt.nazwa,
-                dniNaOplate: hurt.dniNaOplate,
-                dniNaDostawe: hurt.dniNaDostawe
+                idProducent: prod.idProducent,
+                nazwa: prod.nazwa,
+                kraj: prod.kraj
             }
 
-            hurtownie_rowData.push(row);
+           producents_rowData.push(row);
         }
-        return hurtownie_rowData;
+        return producents_rowData;
     }
 
     setColumns() {
         let cols = [
             {
-                headerName: "idHurtownia", field: "idHurtownia", hide: true
+                headerName: "idProducent", field: "idProducent", hide: true
             },
             {
                 headerName: "Nazwa", field: "nazwa", sortable: true, filter: true
             },
             {
-                headerName: "Dni dla oplaty zamowienia", field: "dniNaOplate", sortable: true, filter: true,
-            },
-            {
-                headerName: "Dni na dostawe zamowienia", field: "dniNaDostawe", sortable: true, filter: true
+                headerName: "Kraj", field: "kraj", sortable: true, filter: true,
             }
         ]
         return cols;
@@ -89,14 +85,14 @@ class Hurtownie extends Component {
     }
 
     handleCreate() {
-        this.props.history.push('/hurtownia_edit/0');
+        this.props.history.push('/producent_edit/0');
     }
 
 
     onSelectionChanged() {
         let selectedRows = this.gridApi.getSelectedRows();
         let selectedRow = selectedRows.pop();
-        this.props.history.push('/hurtownia_edit/' + selectedRow.idHurtownia);
+        this.props.history.push('/producent_edit/' + selectedRow.idProducent);
     }
 
     onBtnExport() {
@@ -107,8 +103,9 @@ class Hurtownie extends Component {
     render() {
         return (
             <Container >
-                <h2>Hurtownie</h2>
-                <div style={{ height: '500px',width: '60%' }} className="ag-theme-balham">
+                <h2>Producenci</h2>
+
+                <div style={{ height: '500px', width:'40%' }} className="ag-theme-balham">
                     <div style={{ margin: "10px 0" }}>
                         <Button onClick={this.onBtnExport.bind(this)} color='info'>Eksportuj Dane</Button>
                     </div>
@@ -124,7 +121,7 @@ class Hurtownie extends Component {
                         localeText={local_pl}
                     />
                     <FormGroup>
-                        <Button color="primary" type="button" onClick={this.handleCreate}>Dodaj Hurtowniu</Button>
+                        <Button color="primary" type="button" onClick={this.handleCreate}>Dodaj Producenta</Button>
                     </FormGroup>
                 </div>
             </Container>
@@ -133,4 +130,4 @@ class Hurtownie extends Component {
 }
 
 
-export default connect()(Hurtownie);
+export default connect()(Producents);

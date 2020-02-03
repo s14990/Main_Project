@@ -1,11 +1,9 @@
 ﻿import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormText, Table, Row, Col, Container } from 'reactstrap';
+import { Button, FormGroup, Label, Input, Row, Col, Container } from 'reactstrap';
 import { connect } from 'react-redux';
-import axios from 'axios';
 import validator from 'validator';
 
 class Edit_Artykul extends Component {
-    displayName = Edit_Artykul.name
 
     constructor(props) {
         super(props);
@@ -30,7 +28,7 @@ class Edit_Artykul extends Component {
                 .then(response => response.json())
                 .then(data => {
                     this.setState({
-                        id: data.idArtykul, nazwa: data.nazwa, kod: data.kod+'', illoscProduktow: data.illoscProduktow,
+                        id: data.idArtykul, nazwa: data.nazwa, kod: data.kod + '', illoscProduktow: data.illoscProduktow,
                         illoscPodstawowa: data.illoscPodstawowa, kategoria: data.kategoriaIdKategoria, producent: data.producentIdProducent,
                         wymaganaRecepta: data.wymaganaRecepta, mode: 'edit'
                     });
@@ -49,7 +47,7 @@ class Edit_Artykul extends Component {
             });
     }
 
-    componentDidUpdate(prevProps,prevState) {
+    componentDidUpdate(prevProps, prevState) {
         if (prevState.kod !== this.state.kod || prevState.nazwa !== this.state.nazwa || prevState.illoscPodstawowa !== this.state.illoscPodstawowa ||
             prevState.kategoria !== this.state.kategoria || prevState.producent !== this.state.producent) {
             this.validateData();
@@ -178,6 +176,7 @@ class Edit_Artykul extends Component {
         return (
             <Container>
                 <Col xs="8">
+                    {this.state.mode === "edit" ? <h3>Zmiana Artykułu</h3> : <h3>Dodanie Atykułu</h3>}
                     <Row>
                         <FormGroup>
                             <Label htmlFor="nazwa">Nazwa</Label>
@@ -228,21 +227,21 @@ class Edit_Artykul extends Component {
                     <Row>
                         {this.state.mode === "edit" &&
                             <Col>
-                                <Button color="info" type="button" onClick={this.handleUpdate} disabled={this.state.disabled}>Save Artykul</Button>
+                                <Button color="info" type="button" onClick={this.handleUpdate} disabled={this.state.disabled}>Zatwierdż zmiany</Button>
                             </Col>
                         }
-                        {this.state.mode === "edit" &&
+                        {this.state.mode === "other" &&
                             <Col>
                                 <Button color="danger" onClick={this.handleDelete}> Delete Artykul</Button>
                             </Col>
                         }
                         {this.state.mode === "create" &&
                             <Col>
-                                <Button color="success" onClick={this.handleCreate} disabled={this.state.disabled}>Create Artykul</Button>
+                                <Button color="success" onClick={this.handleCreate} disabled={this.state.disabled}>Stwórz Artykuł</Button>
                             </Col>
                         }
                         <Col>
-                            <Button color="secondary" type="button" onClick={this.handleReturn}>Return</Button>
+                            <Button color="secondary" type="button" onClick={this.handleReturn}>Powrót</Button>
                         </Col>
                     </Row>
                 </Col>
@@ -258,7 +257,6 @@ class Edit_Artykul extends Component {
 
         return (
             <div>
-                <h1>Edit Artykul</h1>
                 {contents}
             </div>
         );

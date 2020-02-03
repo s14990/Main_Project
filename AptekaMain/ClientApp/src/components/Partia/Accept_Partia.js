@@ -1,11 +1,12 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Button, Form, FormGroup, Label, Input, FormText, Table, Container, Row, Col } from 'reactstrap';
+import { Button, FormGroup, Label, Input, Container, Row, Col } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
 import DatePicker from 'react-datepicker';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
+import { local_pl } from '../../components/grid_pl';
+
 
 class Accept_Partia extends Component {
 
@@ -292,11 +293,11 @@ class Accept_Partia extends Component {
                 </Row>
                 <Row>
                     <Col xs="3">
-                        <Label htmlFor="Liczba">Illosc zakupu</Label>
+                        <Label htmlFor="Liczba">Iłość zakupu</Label>
                         <Input type="number" className="form-control" name="Liczba" value={this.state.Liczba} onChange={this.handleInputChange} />
                     </Col>
                     <Col xs="3" md={{ size: 2, offset: 4 }}>
-                        <Label htmlFor="CenaWSprzedazy">Cena w sprzedazy</Label>
+                        <Label htmlFor="CenaWSprzedazy">Cena w sprzedaży</Label>
                         <Input type="number" className="form-control" name="CenaWSprzedazy" value={this.state.CenaWSprzedazy} onChange={this.handleInputChange} />
                     </Col>
                 </Row>
@@ -311,17 +312,18 @@ class Accept_Partia extends Component {
                             onCellEditingStopped={this.onCellEditingStopped.bind(this)}
                         //  rowSelection={this.state.rowSelection}
                         //  onSelectionChanged={this.onSelectionChanged.bind(this)}
+                            localeText={local_pl}
                         />
                     </div>
                 </Row>
                 <Row>
                     <Col>
                         <FormGroup>
-                            <Button color="success" onClick={this.handleUpdate}>{this.state.length === this.state.current_location ? "Zakoncz Przyjmowanie" : "Przejdz do następnego"} </Button>
+                            <Button color="success" onClick={this.handleUpdate}>{this.state.length === this.state.current_location ? "Zakończ Przyjmowanie" : "Przejdz do następnego"} </Button>
                         </FormGroup>
                     </Col>
                     <Col>
-                        <p>Partia {this.state.current_location + 1} Out of {this.state.length + 1} </p>
+                        <p>Partia {this.state.current_location + 1} z {this.state.length + 1} </p>
                     </Col>
                 </Row>
             </Container>

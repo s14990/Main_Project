@@ -26,7 +26,7 @@ export default class Login extends Component {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                UserName: this.state.username,
+                Email: this.state.username,
                 Password: this.state.password
             })
         }).then((response) => {
@@ -35,7 +35,7 @@ export default class Login extends Component {
                 setTimeout(this.refresh, 500);
             }
             else {
-                this.setState({ err: "Login failed" });
+                this.setState({ err: "Nieudane łogowanie" });
             }
         });
 
@@ -72,25 +72,25 @@ export default class Login extends Component {
 
     validateData() {
         this.setState({ err: "", disabled: false });
-        if (this.state.username.length <= 3)
-            this.setState({ err: "Username nie moż być krótrsza od 3 znaków", disabled: true });
+        if (this.state.username.length <= 5)
+            this.setState({ err: "Email użytkownika nie może być krótrszy od 5 znaków", disabled: true });
         if (this.state.password.length <= 5)
-            this.setState({ err: "Password nie moż być krótrsza od 3 znaków", disabled: true });
+            this.setState({ err: "Hasło nie może być krótrsze od 5 znaków", disabled: true });
     }
 
     renderLoginForm() {
         return (
             <form>
                 <div class="form-group">
-                    <label htmlFor="username">username</label>
+                    <label htmlFor="username">Nazwa użytkownika</label>
                     <input type="text" className="form-control" name="username" value={this.state.username} onChange={this.handleInputChange} />
                 </div>
                 <div class="form-group">
-                    <label htmlFor="password">Password</label>
+                    <label htmlFor="password">Hasło</label>
                     <input type="password" className="form-control" name="password" value={this.state.password} onChange={this.handleInputChange} />
                 </div>
                 {this.state.err.length > 0 && <p className="Error">{this.state.err}</p>}
-                <button className="btn btn-primary" type="button" onClick={this.handleLogin} disabled={this.state.disabled}>Login</button>
+                <button className="btn btn-primary" type="button" onClick={this.handleLogin} disabled={this.state.disabled}></button>
             </form>
         );
     }

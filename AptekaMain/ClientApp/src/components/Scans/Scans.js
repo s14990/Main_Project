@@ -47,7 +47,7 @@ export default class Scans extends Component {
                         <tr>
                             <th>Scan Id</th>
                             <th>Sprzedaz Id</th>
-                            <th>ScanName</th>
+                            <th>Nazwa Scanu</th>
                             <th>Scan</th>
                         </tr>
                     </thead>

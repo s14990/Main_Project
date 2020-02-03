@@ -1,18 +1,19 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Button, Form, FormGroup, Label, Input, FormText, Table } from 'reactstrap';
+import { Button, Container, FormGroup, } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import EditButton from './EditButton';
+import { local_pl } from '../../components/grid_pl';
+
 
 class Artykuls extends Component {
 
     constructor(props) {
         super(props);
         this.state = {
-            artykuls: [], kategorias: [], producents: [], loading_data: true,loading_table: true,
+            artykuls: [], kategorias: [], producents: [], loading_data: true, loading_table: true,
             columnDefs: [],
             rowData: [],
             context: { componentParent: this },
@@ -21,7 +22,7 @@ class Artykuls extends Component {
             },
             rowSelection: "single"
         };
-        
+
         this.findKategoriaName = this.findKategoriaName.bind(this);
         this.findProducentName = this.findProducentName.bind(this);
         this.refresh = this.refresh.bind(this);
@@ -81,46 +82,53 @@ class Artykuls extends Component {
     setRowData() {
         var artykuls = this.state.artykuls;
         var art_rowData = [];
-        for (var i = 0; i<artykuls.length; i++) {
+        for (var i = 0; i < artykuls.length; i++) {
             var artykul = artykuls[i];
             var row = {
-            nazwa: artykul.nazwa,
-            kod: artykul.kod,
-            illoscProduktow: artykul.illoscProduktow,
-            illoscPodstawowa: artykul.illoscPodstawowa,
-            kategoria: this.findKategoriaName(artykul.kategoriaIdKategoria),
-            producent: this.findProducentName(artykul.producentIdProducent),
-            wymaganaRecepta: artykul.wymaganaRecepta,
-            idArtykul: artykul.idArtykul
+                nazwa: artykul.nazwa,
+                kod: artykul.kod,
+                illoscProduktow: artykul.illoscProduktow,
+                illoscPodstawowa: artykul.illoscPodstawowa,
+                kategoria: this.findKategoriaName(artykul.kategoriaIdKategoria),
+                producent: this.findProducentName(artykul.producentIdProducent),
+                wymaganaRecepta: artykul.wymaganaRecepta,
+                idArtykul: artykul.idArtykul
             }
-            
+
             art_rowData.push(row);
         }
         return art_rowData;
     }
 
+
+    onBtnExport() {
+        var params = { suppressQuotes: true };
+        this.gridApi.exportDataAsCsv(params);
+    }
+
+
     setColumns() {
         let cols = [
             {
-                headerName: "Nazwa", field: "nazwa", sortable: true, filter: true ,width: 100
-                },
+                headerName: "Nazwa", field: "nazwa", sortable: true, filter: true, width: 200
+            },
             {
-                headerName: "Kod", field: "kod", sortable: true, filter: true, width: 80 
-                },
+                headerName: "Kod", field: "kod", sortable: true, filter: true, width: 80
+            },
             {
-                headerName: "Illość", field: "illoscProduktow", sortable: true, filter: true, width: 80
-                },
+                headerName: "Ilość", field: "illoscProduktow", sortable: true, filter: true, width: 80, filter: 'agNumberColumnFilter'
+            },
             {
-                headerName: "Illość Podstawowa", field: "illoscPodstawowa", sortable: true, filter: true
-                },
+                headerName: "Ilość Podstawowa", field: "illoscPodstawowa", sortable: true, filter: true, width: 150, filter: 'agNumberColumnFilter'
+            },
             {
                 headerName: "Kategoria", field: "kategoria", sortable: true, filter: true
-                },
+            },
             {
                 headerName: "Producent", field: "producent", sortable: true, filter: true
-                },
+            },
             {
-                headerName: "Wymagana recepta?", field: "wymaganaRecepta",sortable: true
+                headerName: "Wymagana recepta?", field: "wymaganaRecepta", sortable: true, width: 150
             }
         ]
         if (this.props.auth.isAuthenticated && this.props.auth.user.access > 1) {
@@ -143,7 +151,7 @@ class Artykuls extends Component {
     }
 
     handleRedirect(cell) {
-        
+
         //alert(cell);
         this.props.history.push('/artykul_edit/' + cell);
     }
@@ -157,27 +165,36 @@ class Artykuls extends Component {
         let selectedCell = this.gridApi.getFocusedCell();
         let selectedRow = selectedRows.pop();
         if (selectedCell.column.colId !== 'edit')
-        this.props.history.push('/artykul_show/' + selectedRow.idArtykul);
+            this.props.history.push('/artykul_show/' + selectedRow.idArtykul);
     }
 
     render() {
         return (
-            <div style={{ height: '500px' }} className="ag-theme-balham">
-                <AgGridReact
-                    columnDefs={this.state.columnDefs}
-                    rowData={this.state.rowData}
-                    context={this.state.context}
-                    frameworkComponents={this.state.frameworkComponents}
-                    onGridReady={this.onGridReady}
-                    rowSelection={this.state.rowSelection}
-                    onSelectionChanged={this.onSelectionChanged.bind(this)}
-                />
-                {(this.props.auth.isAuthenticated && this.props.auth.user.access > 1) &&
-                    <FormGroup>
-                        <Button color="success" onClick={this.handleCreate}>Dodaj Nowy</Button>
-                    </FormGroup>
-                }
-            </div>
+            <Container fluid='sm'>
+                <div style={{ height: '500px', width: '69%' }} className="ag-theme-balham">
+                    <h3>Lista Artykułów</h3>
+                    <div style={{ margin: "10px 0" }}>
+                        <Button onClick={this.onBtnExport.bind(this)} color='info'>Eksportuj Dane</Button>
+                    </div>
+                    <AgGridReact
+                        columnDefs={this.state.columnDefs}
+                        rowData={this.state.rowData}
+                        context={this.state.context}
+                        frameworkComponents={this.state.frameworkComponents}
+                        onGridReady={this.onGridReady}
+                        rowSelection={this.state.rowSelection}
+                        onSelectionChanged={this.onSelectionChanged.bind(this)}
+                        pagination={true}
+                        paginationAutoPageSize={true}
+                        localeText={local_pl}
+                    />
+                    {(this.props.auth.isAuthenticated && this.props.auth.user.access > 1) &&
+                        <FormGroup>
+                            <Button color="success" onClick={this.handleCreate}>Dodaj Nowy</Button>
+                        </FormGroup>
+                    }
+                </div>
+            </Container>
         );
     }
 }

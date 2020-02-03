@@ -1,12 +1,14 @@
 ﻿import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Form, FormGroup, Label, Input, FormText, Table, Alert, Container, Row, Col } from 'reactstrap';
+import { Button, Form, FormGroup, Label, Input, Container, Row, Col } from 'reactstrap';
 import { AgGridReact } from 'ag-grid-react';
 import Select from 'react-select';
 import DatePicker from 'react-datepicker';
 import 'ag-grid-community/dist/styles/ag-grid.css';
 import 'ag-grid-community/dist/styles/ag-theme-balham.css';
 import 'react-datepicker/dist/react-datepicker.css';
+import { local_pl } from '../../components/grid_pl';
+
 
 class Create_Zamowienia extends Component {
 
@@ -71,7 +73,7 @@ class Create_Zamowienia extends Component {
             art => {
                 return {
                     value: art,
-                    label: art.Nazwa,
+                    label: art.Nazwa
                 }
             }
         );
@@ -472,13 +474,13 @@ class Create_Zamowienia extends Component {
                         <Button color="info" onClick={this.handleAdd}>Dodaj</Button>
                     </Col>
                     <Col>
-                        <Button color="danger" onClick={this.handleDelete}>Delete</Button>
+                        <Button color="danger" onClick={this.handleDelete}>Usuń</Button>
                     </Col>
                 </Row>
                 <Row>
                     <div style={{
                         height: "600px",
-                        width: "100%"
+                        width: "90%"
                     }} className="ag-theme-balham">
                         <AgGridReact
                             columnDefs={this.state.columnDefs}
@@ -490,6 +492,9 @@ class Create_Zamowienia extends Component {
                             onSelectionChanged={this.onSelectionChanged.bind(this)}
                             getRowNodeId={this.state.getRowNodeId}
                             onCellEditingStopped={this.onCellEditingStopped.bind(this)}
+                            pagination={true}
+                            paginationAutoPageSize={true}
+                            localeText={local_pl}
                         />
                     </div>
                 </Row>

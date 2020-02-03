@@ -36,14 +36,6 @@ namespace AptekaMain.Models
         public virtual DbSet<Wydzial> Wydzial { get; set; }
         public virtual DbSet<Zamowienie> Zamowienie { get; set; }
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-                optionsBuilder.UseSqlServer("Server=tcp:aptekamain.database.windows.net,1433;Initial Catalog=AptekaMain;User ID=apteka_admin;Password=usermain0!;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
